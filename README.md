@@ -1,5 +1,7 @@
 # User Management Database Setup
 
+hey read this first! 
+Hey if u wondering why my code is f error , maybe u forget to make sure the SQL configuration is the same, don't ask questions, keep focusing!
 This project includes a basic user table schema for managing user data, such as names, emails, and passwords.
 
 ## 📋 Table Structure
