@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Form Input Modern</title>
+  <link rel="stylesheet" href="css/bootstrap.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8f9fa, #e2e6ea);
+    }
+    .card {
+      border: none;
+      border-radius: 16px;
+    }
+    .form-control:focus {
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+    .form-icon {
+      font-size: 1.2rem;
+      margin-right: 0.5rem;
+      color: #0d6efd;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="col-md-6">
+      <div class="card p-4 shadow">
+        <h3 class="text-center mb-4 text-primary">📝 Register</h3>
+        <form action="insert.jsp" method="post">
+          <div class="mb-3">
+            <label for="nama" class="form-label">👤 Nama Lengkap</label>
+            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama Anda" required>
+          </div>
+          <div class="mb-3">
+            <label for="email" class="form-label">📧 Email</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com" required>
+          </div>
+          <div class="mb-4">
+            <label for="password" class="form-label">🔒 Password</label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="********" required>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg">💾 Simpan Data</button>
+          </div>
+          <div class="text-center mt-3">
+            <small>Sudah punya akun? <a href="login.html" class="text-decoration-none">Login di sini</a></small>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
