@@ -13,7 +13,6 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Data Pengguna</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <style>
@@ -39,6 +38,10 @@
     .sidebar a:hover {
       background-color: #575757;
     }
+    .sidebar a.active {
+      background-color: #495057;
+      font-weight: bold;
+    }
     .content {
       margin-left: 260px;
       padding: 20px;
@@ -50,12 +53,12 @@
 <div class="sidebar">
   <h3 class="text-white text-center">Menu</h3>
   <a href="welcome.jsp">🏠 Home</a>
-  <a href="data-user.jsp">📋 Data Pengguna</a>
+  <a href="data-user.jsp" class="active">📋 Data Pengguna</a>
   <a href="logout.jsp" class="btn btn-outline-danger mt-3">🚪 Logout</a>
 </div>
 
 <div class="content">
-  <div class="card">
+  <div class="card p-4">
     <h4 class="mb-3">📋 Daftar Pengguna</h4>
     <table class="table table-striped">
       <thead class="table-light">
@@ -73,12 +76,9 @@
   ResultSet rs = null;
   try {
     Class.forName("com.mysql.cj.jdbc.Driver");
-    conn = DriverManager.getConnection(
-      "jdbc:mysql://localhost:3306/nugas_db?useSSL=false&serverTimezone=UTC", "root", ""
-    );
+    conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nugas_db?useSSL=false&serverTimezone=UTC", "root", "");
     stmt = conn.createStatement();
     rs = stmt.executeQuery("SELECT id, nama, email, created_at FROM users");
-
     SimpleDateFormat sdf = new SimpleDateFormat("d MMMM yyyy HH:mm", new Locale("id", "ID"));
 
     while (rs.next()) {
@@ -92,7 +92,12 @@
           <td><%= nama %></td>
           <td><%= email %></td>
           <td><%= formattedDate %></td>
-          <td><a href="edit-user.jsp?id=<%= id %>" class="btn btn-warning btn-sm">Edit</a></td>
+          <td>
+            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal"
+              data-id="<%= id %>" data-nama="<%= nama %>" data-email="<%= email %>">Edit</button>
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"
+              data-id="<%= id %>" data-nama="<%= nama %>">Delete</button>
+          </td>
         </tr>
 <%
     }
@@ -108,6 +113,88 @@
     </table>
   </div>
 </div>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form action="update-user.jsp" method="post">
+      <div class="modal-content">
+        <div class="modal-header bg-warning">
+          <h5 class="modal-title" id="editModalLabel">Edit Pengguna</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="edit-id" name="id">
+          <div class="mb-3">
+            <label for="edit-nama" class="form-label">Nama</label>
+            <input type="text" class="form-control" id="edit-nama" name="nama" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="edit-email" name="email" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <form action="delete-user.jsp" method="post">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="delete-id" name="id">
+          <p>Apakah Anda yakin ingin menghapus pengguna <strong id="delete-nama"></strong>?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Script untuk mengisi data modal -->
+<script>
+  var editModal = document.getElementById('editModal');
+  if (editModal) {
+    editModal.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget;
+      var id = button.getAttribute('data-id');
+      var nama = button.getAttribute('data-nama');
+      var email = button.getAttribute('data-email');
+
+      editModal.querySelector('#edit-id').value = id;
+      editModal.querySelector('#edit-nama').value = nama;
+      editModal.querySelector('#edit-email').value = email;
+    });
+  }
+</script>
+
+<script>
+  var deleteModal = document.getElementById('deleteModal');
+  if (deleteModal) {
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+      var button = event.relatedTarget;
+      var id = button.getAttribute('data-id');
+      var nama = button.getAttribute('data-nama');
+
+      deleteModal.querySelector('#delete-id').value = id;
+      deleteModal.querySelector('#delete-nama').textContent = nama;
+    });
+  }
+</script>
 
 <script src="js/bootstrap.bundle.min.js"></script>
 </body>
