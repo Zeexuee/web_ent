@@ -8,12 +8,8 @@
   }
   
   String userId = request.getParameter("id");
-  String nama = request.getParameter("nama");
-  String email = request.getParameter("email");
-  
-  if (userId == null || nama == null || email == null || 
-      userId.trim().isEmpty() || nama.trim().isEmpty() || email.trim().isEmpty()) {
-    response.sendRedirect("data-user.jsp?error=missing-data");
+  if (userId == null || userId.trim().isEmpty()) {
+    response.sendRedirect("data-user.jsp?error=id-not-found");
     return;
   }
   
@@ -26,22 +22,20 @@
       "jdbc:mysql://localhost:3306/nugas_db?useSSL=false&serverTimezone=UTC", "root", ""
     );
     
-    String sql = "UPDATE users SET nama = ?, email = ? WHERE id = ?";
+    String sql = "DELETE FROM users WHERE id = ?";
     ps = conn.prepareStatement(sql);
-    ps.setString(1, nama);
-    ps.setString(2, email);
-    ps.setInt(3, Integer.parseInt(userId));
+    ps.setInt(1, Integer.parseInt(userId));
     
     int result = ps.executeUpdate();
     
     if (result > 0) {
-      response.sendRedirect("data-user.jsp?status=update-success");
+      response.sendRedirect("data-user.jsp?status=delete-success");
     } else {
-      response.sendRedirect("data-user.jsp?error=update-failed");
+      response.sendRedirect("data-user.jsp?error=delete-failed");
     }
     
   } catch (Exception e) {
-    response.sendRedirect("data-user.jsp?error=update-error&message=" + e.getMessage());
+    response.sendRedirect("data-user.jsp?error=delete-error&message=" + e.getMessage());
   } finally {
     try { if (ps != null) ps.close(); } catch (Exception e) {}
     try { if (conn != null) conn.close(); } catch (Exception e) {}
