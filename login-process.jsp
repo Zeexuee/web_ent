@@ -43,7 +43,12 @@
 
     if (rs.next()) {
       session.setAttribute("user", rs.getString("nama"));
-      response.sendRedirect("welcome.jsp");
+      String role = rs.getString("role");
+      if ("admin".equalsIgnoreCase(role)) {
+        response.sendRedirect("admin.jsp");
+      } else {
+        response.sendRedirect("welcome.jsp");
+      }
     } else {
       out.println("<script>alert('Login gagal: email atau password salah!'); window.location='login.html';</script>");
     }
