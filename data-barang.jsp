@@ -186,10 +186,11 @@
       </button>
     </div>
     
-    <table class="table table-striped">
+    <table class="table table-striped align-middle">
       <thead class="table-light">
         <tr>
           <th>No</th>
+          <th>Gambar</th>
           <th>Nama</th>
           <th>Deskripsi</th>
           <th>Harga</th>
@@ -207,8 +208,17 @@
         %>
         <tr>
           <td><%= no++ %></td>
+          <td style="width: 100px">
+            <% if (rs.getString("gambar") != null && !rs.getString("gambar").isEmpty()) { %>
+              <img src="uploads/<%= rs.getString("gambar") %>" class="img-thumbnail" style="width:80px; height:80px; object-fit:cover;">
+            <% } else { %>
+              <img src="https://via.placeholder.com/80?text=No+Image" class="img-thumbnail" style="width:80px; height:80px; object-fit:cover;">
+            <% } %>
+          </td>
           <td><%= rs.getString("nama") %></td>
-          <td><%= rs.getString("deskripsi") %></td>
+          <td>
+            <%= rs.getString("deskripsi").length() > 50 ? rs.getString("deskripsi").substring(0, 50) + "..." : rs.getString("deskripsi") %>
+          </td>
           <td>Rp <%= String.format("%,d", rs.getInt("harga")) %></td>
           <td><%= rs.getInt("stok") %></td>
           <td>
@@ -232,7 +242,7 @@
             rs.close();
             st.close();
           } catch (Exception e) {
-            out.println("<tr><td colspan='6' class='text-danger'>Gagal mengambil data: " + e.getMessage() + "</td></tr>");
+            out.println("<tr><td colspan='7' class='text-danger'>Gagal mengambil data: " + e.getMessage() + "</td></tr>");
           }
         %>
       </tbody>
