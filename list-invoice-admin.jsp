@@ -206,11 +206,11 @@
         <label for="search-status" class="form-label">Status</label>
         <select class="form-select" id="search-status" name="status">
           <option value="">Semua Status</option>
-          <option value="menunggu" <%= "menunggu".equals(request.getParameter("status")) ? "selected" : "" %>>Menunggu</option>
-          <option value="dibayar" <%= "dibayar".equals(request.getParameter("status")) ? "selected" : "" %>>Dibayar</option>
-          <option value="dikirim" <%= "dikirim".equals(request.getParameter("status")) ? "selected" : "" %>>Dikirim</option>
+          <option value="Pending" <%= "menunggu".equals(request.getParameter("status")) ? "selected" : "" %>>Menunggu Pembayaran</option>
+          <option value="dibayar" <%= "dibayar".equals(request.getParameter("status")) ? "selected" : "" %>>Telah Dibayar</option>
+          <option value="dikirim" <%= "dikirim".equals(request.getParameter("status")) ? "selected" : "" %>>Sedang Dikirim</option>
           <option value="selesai" <%= "selesai".equals(request.getParameter("status")) ? "selected" : "" %>>Selesai</option>
-          <option value="batal" <%= "batal".equals(request.getParameter("status")) ? "selected" : "" %>>Batal</option>
+          <option value="batal" <%= "batal".equals(request.getParameter("status")) ? "selected" : "" %>>Dibatalkan</option>
         </select>
       </div>
       <div class="col-md-4">
@@ -313,8 +313,31 @@
               <td>Rp <%= NumberFormat.getNumberInstance(new Locale("id", "ID")).format(total) %></td>
               <td><%= tanggal %></td>
               <td>
+                <%
+                  // Ketika menampilkan status di tabel, pastikan tampilan sesuai dengan nilai dari database
+                  String statusDisplay = "";
+                  switch(status.toLowerCase()) {
+                    case "menunggu":
+                      statusDisplay = "MENUNGGU PEMBAYARAN";
+                      break;
+                    case "dibayar":
+                      statusDisplay = "TELAH DIBAYAR";
+                      break;
+                    case "dikirim":
+                      statusDisplay = "SEDANG DIKIRIM";
+                      break;
+                    case "selesai":
+                      statusDisplay = "SELESAI";
+                      break;
+                    case "batal":
+                      statusDisplay = "DIBATALKAN";
+                      break;
+                    default:
+                      statusDisplay = status.toUpperCase();
+                  }
+                %>
                 <span class="status-badge <%= statusClass %>">
-                  <%= status.toUpperCase() %>
+                  <%= statusDisplay %>
                 </span>
               </td>
               <td class="text-center">
