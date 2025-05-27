@@ -22,19 +22,55 @@
   if (filePart != null && filePart.getSize() > 0) {
     fileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
 
-    // Simpan ke folder project (web/uploads)
-    String uploadPath = application.getRealPath("/uploads");
-    // Jika folder belum ada, buat folder
-    File uploadDir = new File(uploadPath);
-    if (!uploadDir.exists()) uploadDir.mkdirs();
+    // PATH ABSOLUTE - Simpan gambar ke lokasi yang tetap dan bisa dilihat langsung
+    String absoluteUploadPath = "d:/Campus/Kelas/Kelas - Enterprise/WebApplication2/web/uploads";
+    
+    // Path untuk deployment (tetap dibutuhkan agar aplikasi bisa menampilkan gambar)
+    String deploymentPath = application.getRealPath("/uploads");
+    
+    // Debug info - tampilkan lokasi penyimpanan
+    System.out.println("Saving to absolute path: " + absoluteUploadPath);
+    System.out.println("Deployment path: " + deploymentPath);
+    
+    // Buat folder jika belum ada
+    File absoluteUploadDir = new File(absoluteUploadPath);
+    File deploymentUploadDir = new File(deploymentPath);
+    
+    if (!absoluteUploadDir.exists()) absoluteUploadDir.mkdirs();
+    if (!deploymentUploadDir.exists()) deploymentUploadDir.mkdirs();
 
     try (InputStream input = filePart.getInputStream()) {
-      File file = new File(uploadPath, fileName);
-      try (FileOutputStream fos = new FileOutputStream(file)) {
+      // Simpan ke path absolute
+      File absoluteFile = new File(absoluteUploadPath, fileName);
+      try (FileOutputStream absoluteFos = new FileOutputStream(absoluteFile)) {
         byte[] buffer = new byte[1024];
         int bytesRead;
         while ((bytesRead = input.read(buffer)) != -1) {
-          fos.write(buffer, 0, bytesRead);
+          absoluteFos.write(buffer, 0, bytesRead);
+        }
+      }
+      
+      // Simpan juga ke path deployment
+      input.reset(); // Reset stream untuk dibaca ulang
+      if (input.markSupported()) {
+        input.reset();
+        File deploymentFile = new File(deploymentPath, fileName);
+        try (FileOutputStream deploymentFos = new FileOutputStream(deploymentFile)) {
+          byte[] buffer = new byte[1024];
+          int bytesRead;
+          while ((bytesRead = input.read(buffer)) != -1) {
+            deploymentFos.write(buffer, 0, bytesRead);
+          }
+        }
+      } else {
+        // Jika input stream tidak bisa di-reset, salin file dari absolute ke deployment
+        try (FileInputStream fis = new FileInputStream(absoluteFile);
+             FileOutputStream deploymentFos = new FileOutputStream(new File(deploymentPath, fileName))) {
+          byte[] buffer = new byte[1024];
+          int bytesRead;
+          while ((bytesRead = fis.read(buffer)) != -1) {
+            deploymentFos.write(buffer, 0, bytesRead);
+          }
         }
       }
     } catch(Exception e) {
