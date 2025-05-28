@@ -1,62 +1,83 @@
-<%@ page import="java.sql.*" %>
-<%@ page import="java.security.MessageDigest" %>
-<%@ page import="java.security.NoSuchAlgorithmException" %>
-
-<%! 
-  // Fungsi untuk hash password ke SHA-256
-  public String hashPassword(String password) throws Exception {
-    MessageDigest md = MessageDigest.getInstance("SHA-256");
-    byte[] hash = md.digest(password.getBytes("UTF-8"));
-    StringBuilder sb = new StringBuilder();
-    for (byte b : hash) {
-      sb.append(String.format("%02x", b));
-    }
-    return sb.toString();
-  }
-%>
-
+<%@ page import="java.sql.*, java.io.*" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
+  // Ambil data form login
   String email = request.getParameter("email");
   String password = request.getParameter("password");
-  String hashedPassword = "";
-
-  try {
-    hashedPassword = hashPassword(password); // ? Enkripsi sebelum cocokkan
-  } catch (Exception e) {
-    out.println("Gagal enkripsi password: " + e.getMessage());
+  
+  // Debug info
+  System.out.println("==========================================");
+  System.out.println("Login Process - Email/Password Authentication");
+  System.out.println("Email: " + email);
+  System.out.println("Password: [HIDDEN]");
+  
+  if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
+    System.out.println("Login failed: Missing email or password");
+    response.sendRedirect("login.html?error=missing_fields");
     return;
   }
-
+  
+  Connection conn = null;
   try {
+    // Koneksi ke database
     Class.forName("com.mysql.cj.jdbc.Driver");
-    Connection conn = DriverManager.getConnection(
-      "jdbc:mysql://localhost:3306/nugas_db?useSSL=false&serverTimezone=UTC",
-      "root",
-      ""
-    );
-
-    PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE email = ? AND password = ?");
-    stmt.setString(1, email);
-    stmt.setString(2, hashedPassword); // ? cocokkan yang sudah di-hash
-
-    ResultSet rs = stmt.executeQuery();
-
+    System.out.println("JDBC Driver loaded successfully");
+    
+    conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nugas_db?useSSL=false&serverTimezone=UTC", "root", "");
+    System.out.println("Database connection established");
+    
+    // Query untuk memeriksa user
+    String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
+    PreparedStatement ps = conn.prepareStatement(sql);
+    ps.setString(1, email);
+    ps.setString(2, password);
+    
+    System.out.println("Executing query to check user credentials");
+    ResultSet rs = ps.executeQuery();
+    
     if (rs.next()) {
-      session.setAttribute("user", rs.getString("nama"));
-      String role = rs.getString("role");
-      if ("admin".equalsIgnoreCase(role)) {
-        response.sendRedirect("admin.jsp");
+      // Login berhasil
+      int userId = rs.getInt("id");
+      String userName = rs.getString("nama");
+      String userRole = rs.getString("role");
+      String photoUrl = rs.getString("profile_photo");
+      
+      System.out.println("Login successful!");
+      System.out.println("User ID: " + userId);
+      System.out.println("User Name: " + userName);
+      System.out.println("User Role: " + userRole);
+      
+      // Set session
+      session.setAttribute("user", userName);
+      session.setAttribute("userId", userId);
+      session.setAttribute("userEmail", email);
+      if (photoUrl != null && !photoUrl.isEmpty()) {
+        session.setAttribute("userPhotoUrl", photoUrl);
+      }
+      
+      // Redirect berdasarkan role
+      if ("admin".equalsIgnoreCase(userRole)) {
+        System.out.println("Redirecting to admin page (welcome.jsp)");
+        response.sendRedirect("welcome.jsp");
       } else {
+        System.out.println("Redirecting to user page (welcome.jsp)");
         response.sendRedirect("welcome.jsp");
       }
     } else {
-      out.println("<script>alert('Login gagal: email atau password salah!'); window.location='login.html';</script>");
+      // Login gagal
+      System.out.println("Login failed: Invalid credentials for email " + email);
+      response.sendRedirect("login.html?error=invalid_credentials");
     }
-
-    conn.close();
+    
+    rs.close();
+    ps.close();
+    
   } catch (Exception e) {
-    out.println("Error: " + e.getMessage());
+    System.out.println("ERROR during login: " + e.getMessage());
+    e.printStackTrace();
+    response.sendRedirect("login.html?error=" + e.getMessage());
+  } finally {
+    if (conn != null) try { conn.close(); } catch (SQLException e) {}
+    System.out.println("==========================================");
   }
-%>
-
 %>

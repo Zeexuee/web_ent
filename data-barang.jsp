@@ -1,4 +1,4 @@
- <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="jakarta.servlet.http.*, jakarta.servlet.*, java.sql.*, java.text.SimpleDateFormat, java.util.Locale" %>
 <%-- Connection Declaration --%>
 <%
@@ -27,113 +27,261 @@
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
-    body {
-      background: linear-gradient(135deg, #e0f7fa, #ffffff);
-      padding-top: 80px;
+    :root {
+      --primary-color: #4361ee;
+      --secondary-color: #3f37c9;
+      --accent-color: #4895ef;
+      --light-color: #f8f9fa;
+      --dark-color: #212529;
+      --danger-color: #e63946;
+      --warning-color: #ff9f1c;
+      --success-color: #4cc9f0;
     }
+    
+    body {
+      background-color: #f5f7fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding-top: 70px;
+    }
+    
     .sidebar {
       position: fixed;
       top: 0;
       left: 0;
       height: 100%;
-      width: 210px;
-      background: #212529;
-      padding-top: 30px;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.07);
+      width: 240px;
+      background: var(--dark-color);
+      padding-top: 20px;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
       z-index: 100;
+      transition: all 0.3s;
     }
+    
     .sidebar .logo {
-      font-size: 1.6rem;
+      font-size: 1.5rem;
       font-weight: bold;
-      color: #00bcd4;
+      color: var(--accent-color);
       text-align: center;
-      margin-bottom: 30px;
-      letter-spacing: 1px;
+      margin-bottom: 25px;
+      padding: 0 15px;
     }
+    
     .sidebar a {
-      color: #f8f9fa;
-      padding: 12px 22px;
+      color: rgba(255,255,255,0.85);
+      padding: 12px 25px;
       text-decoration: none;
       display: flex;
       align-items: center;
-      font-size: 1.08rem;
-      border-radius: 8px 0 0 8px;
-      margin-bottom: 6px;
-      transition: background 0.2s;
+      font-size: 1rem;
+      border-radius: 5px;
+      margin: 8px 12px;
+      transition: all 0.2s;
     }
+    
     .sidebar a:hover, .sidebar a.active {
-      background: #00bcd4;
-      color: #fff;
+      background: var(--primary-color);
+      color: white;
+      transform: translateX(5px);
     }
-    .content {
-      margin-left: 230px;
-      padding: 30px 20px 20px 20px;
-      min-height: 100vh;
-    }
-    .navbar-brand {
-      font-weight: bold;
-      font-size: 1.5rem;
-      letter-spacing: 1px;
-      color: #00bcd4 !important;
-    }
-    .navbar {
-      box-shadow: 0 2px 12px rgba(0,188,212,0.07);
-      background: #fff;
-    }
-    .navbar .nav-link, .navbar .dropdown-toggle {
-      color: #212529 !important;
-      font-weight: 500;
+    
+    .sidebar a i {
       margin-right: 10px;
+      font-size: 1.1rem;
     }
-    .navbar .nav-link.active, .navbar .nav-link:hover {
-      color: #00bcd4 !important;
+    
+    .content {
+      margin-left: 260px;
+      padding: 25px;
+      transition: all 0.3s;
     }
-    .navbar .badge {
-      font-size: 0.8em;
-      background: #00bcd4;
-      color: #fff;
-      vertical-align: top;
-      margin-left: -8px;
+    
+    .navbar {
+      background-color: white;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+      margin-left: 240px;
+      padding: 10px 25px;
     }
-    .card {
+    
+    .navbar .nav-link {
+      color: var(--dark-color);
+      font-weight: 500;
+    }
+    
+    .navbar .nav-link:hover {
+      color: var(--primary-color);
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .page-title {
+      font-weight: 600;
+      color: var(--dark-color);
+      margin: 0;
+    }
+    
+    .btn-add {
+      background: var(--primary-color);
+      color: white;
       border: none;
-      border-radius: 18px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      padding: 8px 20px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
     }
-    .table {
-      border-radius: 12px;
+    
+    .btn-add:hover {
+      background: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .products-table {
+      width: 100%;
+      background: white;
+      border-radius: 10px;
       overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
     }
-    .table thead {
+    
+    .products-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .products-table th {
       background-color: #f8f9fa;
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--dark-color);
+      border-bottom: 1px solid #eee;
     }
-    .btn-warning {
-      background: #ff9800;
-      border-color: #ff9800;
+    
+    .products-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+      vertical-align: middle;
     }
-    .btn-warning:hover {
-      background: #f57c00;
-      border-color: #f57c00;
+    
+    .products-table tr:last-child td {
+      border-bottom: none;
     }
-    .btn-danger {
-      background: #f44336;
-      border-color: #f44336;
+    
+    .products-table tr:hover {
+      background-color: rgba(67, 97, 238, 0.03);
     }
-    .btn-danger:hover {
-      background: #d32f2f;
-      border-color: #d32f2f;
+    
+    .product-img-small {
+      width: 70px;
+      height: 70px;
+      object-fit: cover;
+      border-radius: 8px;
     }
-    .btn-success {
-      background: #4caf50;
-      border-color: #4caf50;
+    
+    .product-stock-cell {
+      width: 140px;
     }
-    .btn-success:hover {
-      background: #388e3c;
-      border-color: #388e3c;
+    
+    .product-actions-cell {
+      width: 180px;
     }
-    @media (max-width: 900px) {
-      .sidebar { width: 100%; height: auto; position: static; box-shadow: none; }
-      .content { margin-left: 0; padding: 15px; }
+    
+    .btn-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .modal-header-success {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .modal-header-warning {
+      background-color: var(--warning-color);
+      color: white;
+    }
+    
+    @media (max-width: 992px) {
+      .sidebar {
+        width: 70px;
+        overflow: hidden;
+      }
+      
+      .sidebar .logo {
+        font-size: 1.2rem;
+        margin-bottom: 40px;
+      }
+      
+      .sidebar a span {
+        display: none;
+      }
+      
+      .sidebar a {
+        justify-content: center;
+        padding: 15px;
+      }
+      
+      .sidebar a i {
+        margin-right: 0;
+        font-size: 1.3rem;
+      }
+      
+      .content {
+        margin-left: 85px;
+      }
+      
+      .navbar {
+        margin-left: 70px;
+      }
+      
+      .products-table {
+        overflow-x: auto;
+      }
+      
+      .product-desc-cell {
+        max-width: 200px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .product-desc-cell {
+        max-width: 150px;
+      }
+      
+      .product-img {
+        height: 150px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .sidebar {
+        width: 0;
+        padding: 0;
+      }
+      
+      .content, .navbar {
+        margin-left: 0;
+      }
+      
+      .products-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
     }
   </style>
 </head>
@@ -141,17 +289,17 @@
 
 <!-- Sidebar -->
 <div class="sidebar">
-  <div class="logo mb-4">
+  <div class="logo">
     <i class="bi bi-bag-check-fill"></i> TokoKita
   </div>
-  <a href="welcome.jsp"><i class="bi bi-house-door me-2"></i> Home</a>
-  <a href="data-user.jsp"><i class="bi bi-people me-2"></i> Data Pengguna</a>
-  <a href="data-barang.jsp" class="active"><i class="bi bi-box-seam me-2"></i> Data Barang</a>
-  <a href="list-invoice-admin.jsp"><i class="bi bi-box me-2"></i> Invoice</a>
+  <a href="welcome.jsp"><i class="bi bi-house-door"></i> <span>Home</span></a>
+  <a href="data-user.jsp"><i class="bi bi-people"></i> <span>Data Pengguna</span></a>
+  <a href="data-barang.jsp" class="active"><i class="bi bi-box-seam"></i> <span>Data Barang</span></a>
+  <a href="list-invoice-admin.jsp"><i class="bi bi-receipt"></i> <span>Invoice</span></a>
 </div>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg fixed-top" style="left:210px;">
+<nav class="navbar navbar-expand-lg fixed-top">
   <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
@@ -160,14 +308,14 @@
       <ul class="navbar-nav align-items-center">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-            <i class="bi bi-person-circle"></i> <%= userName %>
+            <i class="bi bi-person-circle me-1"></i> <%= userName %>
           </a>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item" href="data-user.jsp"><i class="bi bi-person"></i> Profil</a></li>
+            <li><a class="dropdown-item" href="data-user.jsp"><i class="bi bi-person me-2"></i> Profil</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <a href="logout.jsp" class="dropdown-item text-danger">
-                <i class="bi bi-box-arrow-right"></i> Logout
+                <i class="bi bi-box-arrow-right me-2"></i> Logout
               </a>
             </li>
           </ul>
@@ -178,63 +326,72 @@
 </nav>
 
 <div class="content">
-  <div class="card p-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h4 class="mb-0"><i class="bi bi-box-seam"></i> 📦 Data Barang</h4>
-      <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalTambahBarang">
-        <i class="bi bi-plus-circle"></i> Tambah Barang
-      </button>
-    </div>
-    
-    <table class="table table-striped align-middle">
-      <thead class="table-light">
+  <div class="page-header">
+    <h4 class="page-title"><i class="bi bi-box-seam me-2"></i>Data Barang</h4>
+    <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambahBarang">
+      <i class="bi bi-plus-circle"></i> Tambah Barang
+    </button>
+  </div>
+  
+  <div class="products-table">
+    <table>
+      <thead>
         <tr>
-          <th>No</th>
-          <th>Gambar</th>
-          <th>Nama</th>
+          <th width="80">Gambar</th>
+          <th>Nama Barang</th>
           <th>Deskripsi</th>
           <th>Harga</th>
-          <th>Stok</th>
-          <th>Aksi</th>
+          <th class="product-stock-cell">Stok</th>
+          <th class="product-actions-cell">Aksi</th>
         </tr>
       </thead>
       <tbody>
         <%
-          int no = 1;
           try {
             Statement st = conn.createStatement();
             ResultSet rs = st.executeQuery("SELECT * FROM barang ORDER BY id DESC");
             while (rs.next()) {
+              int stok = rs.getInt("stok");
+              String stockClass = stok > 10 ? "in-stock" : (stok > 0 ? "low-stock" : "out-of-stock");
+              String stockText = stok > 10 ? "Stok Tersedia" : (stok > 0 ? "Stok Terbatas" : "Stok Habis");
         %>
         <tr>
-          <td><%= no++ %></td>
-          <td style="width: 100px">
+          <td>
             <% if (rs.getString("gambar") != null && !rs.getString("gambar").isEmpty()) { %>
-              <img src="uploads/<%= rs.getString("gambar") %>" class="img-thumbnail" style="width:80px; height:80px; object-fit:cover;">
+              <img src="uploads/<%= rs.getString("gambar") %>" class="product-img-small">
             <% } else { %>
-              <img src="https://via.placeholder.com/80?text=No+Image" class="img-thumbnail" style="width:80px; height:80px; object-fit:cover;">
+              <img src="https://via.placeholder.com/70x70?text=No+Image" class="product-img-small">
             <% } %>
           </td>
-          <td><%= rs.getString("nama") %></td>
-          <td>
-            <%= rs.getString("deskripsi").length() > 50 ? rs.getString("deskripsi").substring(0, 50) + "..." : rs.getString("deskripsi") %>
+          <td><strong><%= rs.getString("nama") %></strong></td>
+          <td class="product-desc-cell">
+            <%= rs.getString("deskripsi").length() > 80 ? rs.getString("deskripsi").substring(0, 80) + "..." : rs.getString("deskripsi") %>
           </td>
           <td>Rp <%= String.format("%,d", rs.getInt("harga")) %></td>
-          <td><%= rs.getInt("stok") %></td>
           <td>
-            <button 
-              class="btn btn-warning btn-sm btn-edit-barang"
-              data-id="<%= rs.getInt("id") %>"
-              data-nama="<%= rs.getString("nama") %>"
-              data-deskripsi="<%= rs.getString("deskripsi") %>"
-              data-harga="<%= rs.getInt("harga") %>"
-              data-stok="<%= rs.getInt("stok") %>"
-              data-bs-toggle="modal"
-              data-bs-target="#modalEditBarang"
-            >Edit</button>
-            <a href="delete-barang.jsp?id=<%= rs.getInt("id") %>" 
-              class="btn btn-danger btn-sm" 
-              onclick="return confirm('Yakin ingin menghapus barang ini?')">Delete</a>
+            <div class="product-stock <%= stockClass %>">
+              <i class="bi bi-circle-fill me-1" style="font-size: 8px;"></i> <%= stockText %> (<%= stok %>)
+            </div>
+          </td>
+          <td>
+            <div class="btn-actions">
+              <button 
+                class="btn-edit"
+                data-id="<%= rs.getInt("id") %>"
+                data-nama="<%= rs.getString("nama") %>"
+                data-deskripsi="<%= rs.getString("deskripsi") %>"
+                data-harga="<%= rs.getInt("harga") %>"
+                data-stok="<%= rs.getInt("stok") %>"
+                data-gambar="<%= rs.getString("gambar") %>"
+                data-bs-toggle="modal"
+                data-bs-target="#modalEditBarang"
+              ><i class="bi bi-pencil me-1"></i> Edit</button>
+              
+              <a href="delete-barang.jsp?id=<%= rs.getInt("id") %>" 
+                class="btn-delete" 
+                onclick="return confirm('Yakin ingin menghapus barang ini?')"
+              ><i class="bi bi-trash me-1"></i> Hapus</a>
+            </div>
           </td>
         </tr>
         <%
@@ -242,7 +399,7 @@
             rs.close();
             st.close();
           } catch (Exception e) {
-            out.println("<tr><td colspan='7' class='text-danger'>Gagal mengambil data: " + e.getMessage() + "</td></tr>");
+            out.println("<tr><td colspan='6'><div class='alert alert-danger'>Gagal mengambil data: " + e.getMessage() + "</div></td></tr>");
           }
         %>
       </tbody>
@@ -254,9 +411,9 @@
 <div class="modal fade" id="modalTambahBarang" tabindex="-1" aria-labelledby="modalTambahBarangLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form action="tambah-barang.jsp" method="post" class="modal-content" enctype="multipart/form-data">
-      <div class="modal-header" style="background-color: #4caf50; color: white;">
-        <h5 class="modal-title" id="modalTambahBarangLabel">Tambah Barang</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-header modal-header-success">
+        <h5 class="modal-title" id="modalTambahBarangLabel"><i class="bi bi-plus-circle me-2"></i>Tambah Barang</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="mb-3">
@@ -265,24 +422,27 @@
         </div>
         <div class="mb-3">
           <label for="deskripsi" class="form-label">Deskripsi</label>
-          <textarea class="form-control" id="deskripsi" name="deskripsi" required></textarea>
+          <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3" required></textarea>
         </div>
         <div class="mb-3">
-          <label for="harga" class="form-label">Harga</label>
-          <input type="number" class="form-control" id="harga" name="harga" min="0" required>
+          <label for="harga" class="form-label">Harga (Rp)</label>
+          <div class="input-group">
+            <span class="input-group-text">Rp</span>
+            <input type="number" class="form-control" id="harga" name="harga" min="0" required>
+          </div>
         </div>
         <div class="mb-3">
           <label for="stok" class="form-label">Stok</label>
           <input type="number" class="form-control" id="stok" name="stok" min="0" required>
         </div>
         <div class="mb-3">
-          <label for="gambar" class="form-label">Gambar</label>
+          <label for="gambar" class="form-label">Gambar Produk</label>
           <input type="file" class="form-control" id="gambar" name="gambar" accept="image/*" required>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="submit" class="btn btn-success">Simpan</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Simpan</button>
       </div>
     </form>
   </div>
@@ -292,23 +452,33 @@
 <div class="modal fade" id="modalEditBarang" tabindex="-1" aria-labelledby="modalEditBarangLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form action="edit-barang.jsp" method="post" class="modal-content" enctype="multipart/form-data">
-      <div class="modal-header bg-warning">
-        <h5 class="modal-title" id="modalEditBarangLabel">Edit Barang</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-header modal-header-warning">
+        <h5 class="modal-title" id="modalEditBarangLabel"><i class="bi bi-pencil-square me-2"></i>Edit Barang</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <input type="hidden" id="edit-id" name="id">
+        
+        <!-- Preview Gambar -->
+        <div class="mb-3 text-center">
+          <img id="current-image-preview" src="" alt="Preview Gambar" class="img-thumbnail" style="max-height: 200px;">
+          <p class="small text-muted mt-1">Gambar saat ini</p>
+        </div>
+        
         <div class="mb-3">
           <label for="edit-nama" class="form-label">Nama Barang</label>
           <input type="text" class="form-control" id="edit-nama" name="nama" required>
         </div>
         <div class="mb-3">
           <label for="edit-deskripsi" class="form-label">Deskripsi</label>
-          <textarea class="form-control" id="edit-deskripsi" name="deskripsi" required></textarea>
+          <textarea class="form-control" id="edit-deskripsi" name="deskripsi" rows="3" required></textarea>
         </div>
         <div class="mb-3">
-          <label for="edit-harga" class="form-label">Harga</label>
-          <input type="number" class="form-control" id="edit-harga" name="harga" min="0" required>
+          <label for="edit-harga" class="form-label">Harga (Rp)</label>
+          <div class="input-group">
+            <span class="input-group-text">Rp</span>
+            <input type="number" class="form-control" id="edit-harga" name="harga" min="0" required>
+          </div>
         </div>
         <div class="mb-3">
           <label for="edit-stok" class="form-label">Stok</label>
@@ -317,11 +487,12 @@
         <div class="mb-3">
           <label for="edit-gambar" class="form-label">Ganti Gambar (opsional)</label>
           <input type="file" class="form-control" id="edit-gambar" name="gambar" accept="image/*">
+          <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar</small>
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+        <button type="submit" class="btn btn-warning text-white"><i class="bi bi-save me-1"></i> Simpan Perubahan</button>
       </div>
     </form>
   </div>
@@ -330,13 +501,54 @@
 <script src="js/bootstrap.bundle.min.js"></script>
 <script>
   // Isi modal edit barang saat tombol edit diklik
-  document.querySelectorAll('.btn-edit-barang').forEach(function(btn) {
+  document.querySelectorAll('.btn-edit').forEach(function(btn) {
     btn.addEventListener('click', function() {
+      // Isi form dengan data barang
       document.getElementById('edit-id').value = this.getAttribute('data-id');
       document.getElementById('edit-nama').value = this.getAttribute('data-nama');
       document.getElementById('edit-deskripsi').value = this.getAttribute('data-deskripsi');
       document.getElementById('edit-harga').value = this.getAttribute('data-harga');
       document.getElementById('edit-stok').value = this.getAttribute('data-stok');
+      
+      // Set preview gambar
+      const gambarNama = this.getAttribute('data-gambar');
+      const imagePreview = document.getElementById('current-image-preview');
+      
+      if (gambarNama && gambarNama !== 'null' && gambarNama !== '') {
+        imagePreview.src = 'uploads/' + gambarNama;
+        imagePreview.style.display = 'block';
+      } else {
+        imagePreview.src = 'https://via.placeholder.com/200x150?text=No+Image';
+        imagePreview.style.display = 'block';
+      }
+    });
+  });
+  
+  // Preview gambar baru saat file dipilih (opsional)
+  document.getElementById('edit-gambar').addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        document.getElementById('current-image-preview').src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+  
+  // Toggle sidebar pada layar kecil
+  const toggleSidebar = () => {
+    const sidebar = document.querySelector('.sidebar');
+    if (window.innerWidth <= 576) {
+      sidebar.style.width = sidebar.style.width === '240px' ? '0' : '240px';
+    }
+  };
+  
+  // Inisialisasi tooltip
+  document.addEventListener('DOMContentLoaded', function() {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
     });
   });
 </script>

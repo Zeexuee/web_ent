@@ -122,7 +122,6 @@
 </head>
 <body>
 
-<!-- Sidebar -->
 <div class="sidebar">
   <div class="logo mb-4">
     <i class="bi bi-bag-check-fill"></i> TokoKita
@@ -130,8 +129,9 @@
   <a href="welcome.jsp"><i class="bi bi-house-door me-2"></i> Home</a>
   <a href="data-user.jsp" class="active"><i class="bi bi-people me-2"></i> Data Pengguna</a>
   <a href="data-barang.jsp"><i class="bi bi-box-seam me-2"></i> Data Barang</a>
-  <a href="list-invoice-admin.jsp"><i class="bi bi-box me-2"></i> Invoice</a>
+  <a href="list-invoice-admin.jsp"><i class="bi bi-receipt me-2"></i> Invoice</a>
 </div>
+
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg fixed-top" style="left:210px;">
@@ -145,7 +145,7 @@
           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
             <i class="bi bi-person-circle"></i> <%= userName %>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+          <ul class="dropdown-menu dropdown-menu-e nd" aria-labelledby="userDropdown">
             <li><a class="dropdown-item" href="data-user.jsp"><i class="bi bi-person"></i> Profil</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>

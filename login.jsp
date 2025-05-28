@@ -1,9 +1,10 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Registrasi Pengguna</title>
+  <title>Login Pengguna</title>
   <link rel="stylesheet" href="css/bootstrap.min.css">
   
   <!-- Firebase SDK -->
@@ -63,24 +64,47 @@
   <div class="container d-flex justify-content-center align-items-center vh-100">
     <div class="col-md-6">
       <div class="card p-4 shadow">
-        <h3 class="text-center mb-4 text-primary">📝 Register</h3>
+        <h3 class="text-center mb-4 text-primary">🔐 Login Pengguna</h3>
         
-        <!-- Daftar dengan Google Button -->
-        <button id="googleSignup" class="btn btn-lg btn-google mb-3">
+        <% 
+          String error = request.getParameter("error");
+          String success = request.getParameter("success");
+          
+          if (error != null) { 
+        %>
+          <div class="alert alert-danger mb-3">
+            <% if ("invalid_credentials".equals(error)) { %>
+              Email atau password salah. Silakan coba lagi.
+            <% } else if ("missing_fields".equals(error)) { %>
+              Mohon lengkapi semua field.
+            <% } else { %>
+              Terjadi kesalahan: <%= error %>
+            <% } %>
+          </div>
+        <% } %>
+
+        <% if (success != null) { %>
+          <div class="alert alert-success mb-3">
+            <% if ("registration_complete".equals(success)) { %>
+              Pendaftaran berhasil! Silakan login.
+            <% } else if ("logout_success".equals(success)) { %>
+              Anda telah berhasil logout.
+            <% } %>
+          </div>
+        <% } %>
+        
+        <!-- Login dengan Google Button -->
+        <button id="googleLogin" class="btn btn-lg btn-google mb-3">
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="google-icon" alt="Google logo">
-          Daftar dengan Google
+          Masuk dengan Google
         </button>
         
         <div class="or-divider">
           <span>ATAU</span>
         </div>
         
-        <!-- Form register normal -->
-        <form action="insert.jsp" method="post">
-          <div class="mb-3">
-            <label for="nama" class="form-label">👤 Nama Lengkap</label>
-            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama Anda" required>
-          </div>
+        <!-- Form login normal -->
+        <form action="login-process.jsp" method="post">
           <div class="mb-3">
             <label for="email" class="form-label">📧 Email</label>
             <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com" required>
@@ -90,19 +114,19 @@
             <input type="password" class="form-control" id="password" name="password" placeholder="********" required>
           </div>
           <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">💾 Simpan Data</button>
+            <button type="submit" class="btn btn-primary btn-lg">➡️ Masuk</button>
           </div>
         </form>
         <div class="text-center mt-3">
-          <small>Sudah punya akun? <a href="login.jsp" class="text-decoration-none">Login di sini</a></small>
+          <small>Belum punya akun? <a href="form.html" class="text-decoration-none">Daftar di sini</a></small>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // Konfigurasi Firebase - GANTI dengan konfigurasi dari Firebase Console Anda
-     const firebaseConfig = {
+    // Konfigurasi Firebase dari project Anda - DIPERBAIKI
+    const firebaseConfig = {
       apiKey: "AIzaSyD9H6zdJh50_lRtmJJHN9AYyrYgF3OlL5M",
       authDomain: "entreprise-b4307.firebaseapp.com",
       projectId: "entreprise-b4307",
@@ -114,31 +138,62 @@
 
     // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
+    console.log("Firebase initialized successfully");
     
-    // Setup Google signup
-    document.getElementById('googleSignup').addEventListener('click', function() {
+    // Test koneksi Firebase
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        console.log("User is signed in:", user.email);
+      } else {
+        console.log("No user is signed in.");
+      }
+    });
+    
+    // Setup Google login dengan error handling yang lebih baik
+    document.getElementById('googleLogin').addEventListener('click', function() {
+      console.log("Google login button clicked");
+      
       const provider = new firebase.auth.GoogleAuthProvider();
+      
+      // Tambahkan scope untuk akses lebih baik (opsional)
+      provider.addScope('profile');
+      provider.addScope('email');
+      
+      // Set language (opsional)
+      firebase.auth().languageCode = 'id';
+      
       firebase.auth().signInWithPopup(provider)
         .then((result) => {
-          // User berhasil login/signup dengan Google
+          // User berhasil login
           const user = result.user;
-          console.log("Google signup success", user);
+          console.log("Google login success:", user);
+          console.log("Firebase UID:", user.uid);
+          console.log("Display Name:", user.displayName);
+          console.log("Email:", user.email);
+          console.log("Photo URL:", user.photoURL);
           
           // Kirim data ke server untuk diproses
           sendUserDataToServer(user);
         })
         .catch((error) => {
-          console.error("Error during Google sign up:", error);
-          alert("Pendaftaran gagal: " + error.message);
+          // Handle errors
+          console.error("Error code:", error.code);
+          console.error("Error message:", error.message);
+          console.error("Error email:", error.email);
+          console.error("Error credential:", error.credential);
+          
+          alert("Login gagal: " + error.message);
         });
     });
     
-    // Fungsi untuk mengirim data ke server (sama seperti di login.html)
+    // Fungsi untuk mengirim data ke server
     function sendUserDataToServer(user) {
+      // Buat form tersembunyi untuk mengirim data ke server
       const form = document.createElement('form');
       form.method = 'POST';
       form.action = 'firebase-auth-process.jsp';
       
+      // Tambahkan field yang diperlukan
       const fields = {
         'firebaseUid': user.uid,
         'displayName': user.displayName,
