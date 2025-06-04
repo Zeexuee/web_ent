@@ -29,7 +29,7 @@
 
         // Path absolute di komputer Anda
  
-     String absoluteUploadPath = "d:/Campus/Kelas/Kelas - Enterprise/WebApplication2/web/uploads";
+     String absoluteUploadPath = "d:/Campus/Kelas/Kelas-Enterprise/WebApplication2/web/uploads";
     
         // Path deployment aplikasi
         String deploymentPath = application.getRealPath("/uploads");

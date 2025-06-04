@@ -459,12 +459,6 @@
       <div class="modal-body">
         <input type="hidden" id="edit-id" name="id">
         
-        <!-- Preview Gambar -->
-        <div class="mb-3 text-center">
-          <img id="current-image-preview" src="" alt="Preview Gambar" class="img-thumbnail" style="max-height: 200px;">
-          <p class="small text-muted mt-1">Gambar saat ini</p>
-        </div>
-        
         <div class="mb-3">
           <label for="edit-nama" class="form-label">Nama Barang</label>
           <input type="text" class="form-control" id="edit-nama" name="nama" required>
@@ -489,6 +483,13 @@
           <input type="file" class="form-control" id="edit-gambar" name="gambar" accept="image/*">
           <small class="text-muted">Biarkan kosong jika tidak ingin mengubah gambar</small>
         </div>
+        
+        <!-- Preview Gambar -->
+        <div class="mb-3 text-center">
+          <img id="current-image-preview" src="" alt="Preview Gambar" class="img-thumbnail" style="max-height: 200px; display: none;">
+          <p id="current-image-text" class="small text-muted mt-1" style="display: none;">Gambar saat ini</p>
+        </div>
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
@@ -513,26 +514,46 @@
       // Set preview gambar
       const gambarNama = this.getAttribute('data-gambar');
       const imagePreview = document.getElementById('current-image-preview');
+      const imageText = document.getElementById('current-image-text');
       
       if (gambarNama && gambarNama !== 'null' && gambarNama !== '') {
         imagePreview.src = 'uploads/' + gambarNama;
         imagePreview.style.display = 'block';
+        imageText.style.display = 'block';
       } else {
         imagePreview.src = 'https://via.placeholder.com/200x150?text=No+Image';
-        imagePreview.style.display = 'block';
+        imagePreview.style.display = 'block'; // Tetap tampilkan placeholder
+        imageText.style.display = 'block';
       }
+      // Reset input file agar tidak menampilkan nama file sebelumnya
+      document.getElementById('edit-gambar').value = ""; 
     });
   });
   
   // Preview gambar baru saat file dipilih (opsional)
   document.getElementById('edit-gambar').addEventListener('change', function() {
     const file = this.files[0];
+    const imagePreview = document.getElementById('current-image-preview');
+    const imageText = document.getElementById('current-image-text');
+
     if (file) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        document.getElementById('current-image-preview').src = e.target.result;
+        imagePreview.src = e.target.result;
+        imagePreview.style.display = 'block';
+        imageText.style.display = 'block'; // Tampilkan juga teks "Gambar saat ini"
       };
       reader.readAsDataURL(file);
+    } else {
+        // Jika tidak ada file dipilih (misalnya user membatalkan pilihan),
+        // kembali ke gambar asli atau placeholder
+        const originalImageSrc = document.querySelector('.btn-edit[data-id="' + document.getElementById('edit-id').value + '"]').getAttribute('data-gambar');
+        if (originalImageSrc && originalImageSrc !== 'null' && originalImageSrc !== '') {
+            imagePreview.src = 'uploads/' + originalImageSrc;
+        } else {
+            imagePreview.src = 'https://via.placeholder.com/200x150?text=No+Image';
+        }
+        // Jangan sembunyikan jika tidak ada file baru, biarkan gambar asli/placeholder terlihat
     }
   });
   

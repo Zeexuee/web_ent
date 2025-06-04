@@ -1,166 +1,214 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Registrasi Pengguna</title>
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login Pengguna</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body {
-      background: linear-gradient(135deg, #f8f9fa, #e2e6ea);
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .card {
-      border: none;
-      border-radius: 16px;
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
     }
-    .form-control:focus {
-      border-color: #0d6efd;
-      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(10px); }
+      to { opacity: 1; transform: translateX(0); }
     }
-    .btn-google {
-      background-color: white;
-      color: #757575;
-      border: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: all 0.3s;
+    .tab-content {
+      animation: slideIn 0.3s ease-out forwards;
     }
-    .btn-google:hover {
-      background-color: #f1f3f4;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+    .btn-hover {
+      transition: all 0.3s ease;
     }
-    .google-icon {
-      width: 18px;
-      height: 18px;
+    .btn-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-    .or-divider {
-      display: flex;
-      align-items: center;
-      text-align: center;
-      margin: 20px 0;
+    .btn-hover:active {
+      transform: translateY(0);
     }
-    .or-divider::before, .or-divider::after {
-      content: '';
-      flex: 1;
-      border-bottom: 1px solid #ddd;
-    }
-    .or-divider span {
-      padding: 0 10px;
-      color: #757575;
-      font-size: 0.9rem;
+    input:focus {
+      outline: none;
+      border-color: #1e40af;
+      box-shadow: 0 0 5px rgba(30, 64, 175, 0.5);
     }
   </style>
 </head>
-<body>
+<body class="bg-blue-400 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md fade-in">
+    <h2 class="text-xl font-semibold text-gray-700 text-center mb-4">🔐 Login Pengguna</h2>
+    <p id="message" class="text-center mb-4 text-red-600"></p>
 
-  <div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="col-md-6">
-      <div class="card p-4 shadow">
-        <h3 class="text-center mb-4 text-primary">📝 Register</h3>
-        
-        <!-- Daftar dengan Google Button -->
-        <button id="googleSignup" class="btn btn-lg btn-google mb-3">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="google-icon" alt="Google logo">
-          Daftar dengan Google
+    <!-- Tab Navigation -->
+    <div class="flex justify-between mb-4">
+      <button id="signInTab" class="w-1/2 py-2 bg-blue-800 text-white font-medium rounded-l-md btn-hover">Masuk</button>
+      <button id="signUpTab" class="w-1/2 py-2 bg-gray-300 text-gray-700 font-medium rounded-r-md btn-hover">Daftar</button>
+    </div>
+
+    <!-- Sign In Form -->
+    <div id="signInForm" class="tab-content">
+      <form id="loginForm" onsubmit="login(event)">
+        <div class="mb-4 flex items-center border border-gray-300 rounded-md p-2 bg-white">
+          <span class="text-gray-500 mr-2">📧</span>
+          <input id="loginEmail" type="email" name="email" class="w-full p-1 border-none focus:outline-none" placeholder="email@example.com" required />
+        </div>
+        <div class="mb-4 flex items-center border border-gray-300 rounded-md p-2 bg-white">
+          <span class="text-gray-500 mr-2">🔒</span>
+          <input id="loginPassword" type="password" name="password" class="w-full p-1 border-none focus:outline-none" placeholder="********" required />
+        </div>
+        <button type="submit" class="w-full py-2 bg-blue-800 text-white rounded-md mb-4 btn-hover">➡️ Masuk</button>
+      </form>
+      <div class="text-center text-gray-600 mb-4">Atau lanjutkan dengan</div>
+      <div class="flex justify-center space-x-4">
+        <button onclick="signInWithGoogle()" title="Login dengan Google" class="focus:outline-none">
+          <img src="https://www.google.com/favicon.ico" alt="Google" class="w-8 h-8 cursor-pointer" />
         </button>
-        
-        <div class="or-divider">
-          <span>ATAU</span>
+      </div>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signUpForm" class="tab-content hidden">
+      <form id="registerForm" onsubmit="register(event)">
+        <div class="mb-4 flex items-center border border-gray-300 rounded-md p-2 bg-white">
+          <span class="text-gray-500 mr-2">👤</span>
+          <input id="registerName" type="text" name="nama" class="w-full p-1 border-none focus:outline-none" placeholder="Nama Pengguna" required />
         </div>
-        
-        <!-- Form register normal -->
-        <form action="insert.jsp" method="post">
-          <div class="mb-3">
-            <label for="nama" class="form-label">👤 Nama Lengkap</label>
-            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama Anda" required>
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">📧 Email</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="email@example.com" required>
-          </div>
-          <div class="mb-4">
-            <label for="password" class="form-label">🔒 Password</label>
-            <input type="password" class="form-control" id="password" name="password" placeholder="********" required>
-          </div>
-          <div class="d-grid">
-            <button type="submit" class="btn btn-primary btn-lg">💾 Simpan Data</button>
-          </div>
-        </form>
-        <div class="text-center mt-3">
-          <small>Sudah punya akun? <a href="login.jsp" class="text-decoration-none">Login di sini</a></small>
+        <div class="mb-4 flex items-center border border-gray-300 rounded-md p-2 bg-white">
+          <span class="text-gray-500 mr-2">📧</span>
+          <input id="registerEmail" type="email" name="email" class="w-full p-1 border-none focus:outline-none" placeholder="email@example.com" required />
         </div>
+        <div class="mb-4 flex items-center border border-gray-300 rounded-md p-2 bg-white">
+          <span class="text-gray-500 mr-2">🔒</span>
+          <input id="registerPassword" type="password" name="password" class="w-full p-1 border-none focus:outline-none" placeholder="********" required />
+        </div>
+        <button type="submit" class="w-full py-2 bg-blue-800 text-white rounded-md mb-4 btn-hover">Daftar</button>
+      </form>
+      <div class="text-center text-gray-600 mb-4">Atau lanjutkan dengan</div>
+      <div class="flex justify-center space-x-4">
+        <!-- Placeholder untuk opsi lain -->
+        <img src="https://www.google.com/favicon.ico" alt="Google" class="w-8 h-8 cursor-pointer" />
       </div>
     </div>
   </div>
 
-  <script>
-    // Konfigurasi Firebase - GANTI dengan konfigurasi dari Firebase Console Anda
-     const firebaseConfig = {
-      apiKey: "AIzaSyD9H6zdJh50_lRtmJJHN9AYyrYgF3OlL5M",
-      authDomain: "entreprise-b4307.firebaseapp.com",
-      projectId: "entreprise-b4307",
-      storageBucket: "entreprise-b4307.appspot.com", // PERBAIKAN: format appspot.com yang benar
-      messagingSenderId: "585290944703",
-      appId: "1:585290944703:web:0cc9e343d1c9139fcab60a",
-      measurementId: "G-DG8GMYB4PM"
-    };
+  <!-- Firebase JS SDK -->
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
 
-    // Inisialisasi Firebase
-    firebase.initializeApp(firebaseConfig);
-    
-    // Setup Google signup
-    document.getElementById('googleSignup').addEventListener('click', function() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      firebase.auth().signInWithPopup(provider)
-        .then((result) => {
-          // User berhasil login/signup dengan Google
-          const user = result.user;
-          console.log("Google signup success", user);
-          
-          // Kirim data ke server untuk diproses
-          sendUserDataToServer(user);
-        })
-        .catch((error) => {
-          console.error("Error during Google sign up:", error);
-          alert("Pendaftaran gagal: " + error.message);
+  const firebaseConfig = {
+    apiKey: "AIzaSyBfXvTA8g71mMG4tTcJCW-kGYirC-eHiKo",
+    authDomain: "fathan-64919.firebaseapp.com",
+    projectId: "fathan-64919",
+    storageBucket: "fathan-64919.firebasestorage.app",
+    messagingSenderId: "382140446563",
+    appId: "1:382140446563:web:3cc2dc3dd4b687876d8556"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider();
+
+  function setMessage(text, color) {
+    const msg = document.getElementById('message');
+    msg.style.color = color || 'red';
+    msg.innerText = text;
+  }
+
+  window.register = function(event) {
+    event.preventDefault();
+    const email = document.getElementById('registerEmail').value;
+    const password = document.getElementById('registerPassword').value;
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        setMessage('Registrasi berhasil, silakan login.', 'green');
+        document.getElementById('signInTab').click();
+      })
+      .catch((error) => {
+        setMessage(error.message);
+      });
+  };
+
+  window.login = function(event) {
+    event.preventDefault();
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then(async (userCredential) => {
+        const user = userCredential.user;
+        const idToken = await user.getIdToken();
+
+        // Kirim token ke backend JSP
+        const res = await fetch('session-setup.jsp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `idToken=${encodeURIComponent(idToken)}`
         });
-    });
-    
-    // Fungsi untuk mengirim data ke server (sama seperti di login.html)
-    function sendUserDataToServer(user) {
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = 'firebase-auth-process.jsp';
-      
-      const fields = {
-        'firebaseUid': user.uid,
-        'displayName': user.displayName,
-        'email': user.email,
-        'photoURL': user.photoURL
-      };
-      
-      for (const key in fields) {
-        if (fields[key]) {
-          const hiddenField = document.createElement('input');
-          hiddenField.type = 'hidden';
-          hiddenField.name = key;
-          hiddenField.value = fields[key];
-          form.appendChild(hiddenField);
+
+        if (res.ok) {
+          window.location.href = 'welcome.jsp';
+        } else {
+          setMessage('Gagal mengatur session di server.');
         }
+      })
+      .catch((error) => {
+        setMessage(error.message);
+      });
+  };
+
+  window.signInWithGoogle = async function() {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const idToken = await user.getIdToken();
+
+      // Kirim token ke backend JSP
+      const res = await fetch('session-setup.jsp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `idToken=${encodeURIComponent(idToken)}`
+      });
+
+      if (res.ok) {
+        window.location.href = 'admin.jsp';
+      } else {
+        setMessage('Gagal mengatur session di server.');
       }
-      
-      document.body.appendChild(form);
-      form.submit();
+    } catch (error) {
+      setMessage(error.message);
     }
+  };
+
+  // Tab switching logic
+  const signInTab = document.getElementById('signInTab');
+  const signUpTab = document.getElementById('signUpTab');
+  const signInForm = document.getElementById('signInForm');
+  const signUpForm = document.getElementById('signUpForm');
+
+  signInTab.addEventListener('click', () => {
+    signInTab.classList.add('bg-blue-800', 'text-white');
+    signInTab.classList.remove('bg-gray-300', 'text-gray-700');
+    signUpTab.classList.add('bg-gray-300', 'text-gray-700');
+    signUpTab.classList.remove('bg-blue-800', 'text-white');
+    signInForm.classList.remove('hidden');
+    signUpForm.classList.add('hidden');
+    setMessage('');
+  });
+
+  signUpTab.addEventListener('click', () => {
+    signUpTab.classList.add('bg-blue-800', 'text-white');
+    signUpTab.classList.remove('bg-gray-300', 'text-gray-700');
+    signInTab.classList.add('bg-gray-300', 'text-gray-700');
+    signInTab.classList.remove('bg-blue-800', 'text-white');
+    signUpForm.classList.remove('hidden');
+    signInForm.classList.add('hidden');
+    setMessage('');
+  });
   </script>
-  
-  <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

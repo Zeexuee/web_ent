@@ -23,7 +23,7 @@
     fileName = System.currentTimeMillis() + "_" + filePart.getSubmittedFileName();
 
     // PATH ABSOLUTE - Simpan gambar ke lokasi yang tetap dan bisa dilihat langsung
-    String absoluteUploadPath = "d:/Campus/Kelas/Kelas - Enterprise/WebApplication2/web/uploads";
+    String absoluteUploadPath = "d:/Campus/Kelas/Kelas-Enterprise/WebApplication2/web/uploads";
     
     // Path untuk deployment (tetap dibutuhkan agar aplikasi bisa menampilkan gambar)
     String deploymentPath = application.getRealPath("/uploads");

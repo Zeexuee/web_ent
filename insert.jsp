@@ -76,7 +76,7 @@
     
     // Redirect ke halaman login
     System.out.println("Registration successful! Redirecting to login page");
-    response.sendRedirect("login.html?success=registration_complete");
+    response.sendRedirect("login.jsp?success=registration_complete");
     
   } catch (Exception e) {
     System.out.println("ERROR during registration: " + e.getMessage());
