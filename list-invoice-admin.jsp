@@ -153,10 +153,10 @@
   <div class="logo mb-4">
     <i class="bi bi-bag-check-fill"></i> TokoKita
   </div>
-  <a href="admin.jsp"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
-  <a href="data-user.jsp"><i class="bi bi-people me-2"></i> Data Pengguna</a>
+   <a href="admin.jsp" class=""><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+  <a href="data-user.jsp" ><i class="bi bi-people me-2"></i> Data Pengguna</a>
   <a href="data-barang.jsp"><i class="bi bi-box-seam me-2"></i> Data Barang</a>
-  <a href="list-invoice-admin.jsp" class="active"><i class="bi bi-receipt me-2"></i> Transaksi</a>
+  <a href="list-invoice-admin.jsp"  class="active"><i class="bi bi-box me-2"></i> Pesanan</a>
 </div>
 
 <!-- Navbar -->
@@ -188,7 +188,7 @@
 
 <div class="content">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-receipt"></i> Daftar Invoice</h2>
+    <h2><i class="bi bi-receipt"></i> Daftar Pesanan</h2>
     <a href="admin.jsp" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Kembali ke Dashboard
     </a>

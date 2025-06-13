@@ -192,10 +192,10 @@
   <div class="logo mb-4">
     <i class="bi bi-bag-check-fill"></i> TokoKita
   </div>
-  <a href="admin.jsp"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+   <a href="admin.jsp" class=""><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
   <a href="data-user.jsp"><i class="bi bi-people me-2"></i> Data Pengguna</a>
   <a href="data-barang.jsp"><i class="bi bi-box-seam me-2"></i> Data Barang</a>
-  <a href="list-invoice-admin.jsp" class="active"><i class="bi bi-receipt me-2"></i> Transaksi</a>
+  <a href="list-invoice-admin.jsp class="active" "><i class="bi bi-box me-2"></i> Invoice</a>
 </div>
 
 <!-- Navbar -->
@@ -227,7 +227,7 @@
 
 <div class="content">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="bi bi-receipt"></i> Detail Invoice #<%= invoiceId %></h2>
+    <h2><i class="bi bi-receipt"></i> Detail Pesanan #<%= invoiceId %></h2>
     <a href="list-invoice-admin.jsp" class="btn btn-outline-secondary">
       <i class="bi bi-arrow-left"></i> Kembali ke Daftar
     </a>
@@ -265,7 +265,7 @@
             <div class="card-body">
               <h6 class="card-title mb-3"><i class="bi bi-person"></i> Informasi Pelanggan</h6>
               <div class="detail-row">
-                <div class="detail-label">Username</div>
+                <div class="detail-label">Username Pembeli</div>
                 <div class="detail-value"><%= user %></div>
               </div>
               <div class="detail-row">

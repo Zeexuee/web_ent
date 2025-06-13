@@ -126,7 +126,7 @@
   <a href="admin.jsp" class="active"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
   <a href="data-user.jsp"><i class="bi bi-people me-2"></i> Data Pengguna</a>
   <a href="data-barang.jsp"><i class="bi bi-box-seam me-2"></i> Data Barang</a>
-  <a href="list-invoice-admin.jsp"><i class="bi bi-box me-2"></i> Invoice</a>
+  <a href="list-invoice-admin.jsp"><i class="bi bi-box me-2"></i> Pesanan</a>
 </div>
 
 <!-- Navbar -->
@@ -196,9 +196,9 @@
     <div class="col-md-4 mb-3">
       <div class="card stat-card bg-warning text-dark h-100">
         <div class="card-body p-4">
-          <h5 class="card-title">Laporan Toko</h5>
+          <h5 class="card-title">Pesanan</h5>
           <h2 class="mt-3 mb-0">
-            <a href="#" class="text-dark text-decoration-none">
+            <a href="list-invoice-admin.jsp" class="text-dark text-decoration-none">
               <i class="bi bi-arrow-right-circle"></i> Lihat
             </a>
           </h2>

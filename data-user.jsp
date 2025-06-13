@@ -126,10 +126,10 @@
   <div class="logo mb-4">
     <i class="bi bi-bag-check-fill"></i> TokoKita
   </div>
-  <a href="welcome.jsp"><i class="bi bi-house-door me-2"></i> Home</a>
-  <a href="data-user.jsp" class="active"><i class="bi bi-people me-2"></i> Data Pengguna</a>
+  <a href="admin.jsp" class=""><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+  <a href="data-user.jsp"  class="active"><i class="bi bi-people me-2"></i> Data Pengguna</a>
   <a href="data-barang.jsp"><i class="bi bi-box-seam me-2"></i> Data Barang</a>
-  <a href="list-invoice-admin.jsp"><i class="bi bi-receipt me-2"></i> Invoice</a>
+  <a href="list-invoice-admin.jsp"><i class="bi bi-box me-2"></i> Pesanan</a>
 </div>
 
 

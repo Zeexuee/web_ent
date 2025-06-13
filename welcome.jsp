@@ -147,9 +147,7 @@
     <i class="bi bi-bag-check-fill"></i> TokoKita
   </div>
   <a href="welcome.jsp" class="active"><i class="bi bi-house-door me-2"></i> Home</a>
-  <a href="data-user-for-user.jsp"><i class="bi bi-people me-2"></i> Data Pengguna</a>
-  <a href="data-barang.jsp" class="active"><i class="bi bi-box-seam me-2"></i> Data Barang</a>
-  <a href="list-invoice-admin.jsp"><i class="bi bi-box me-2"></i> Invoice</a>
+  <a href="pembelian.jsp"><i class="bi bi-box me-2"></i> Pembelian</a>
 </div>
 
 <!-- Navbar -->

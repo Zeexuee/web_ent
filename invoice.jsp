@@ -46,9 +46,10 @@
     rs.close();
     ps.close();
 
-    // Insert ke tabel invoice_detail
+    // Insert ke tabel invoice_detail dan update stok barang
     if (invoiceId > 0 && barang_id != null) {
       for (int i = 0; i < barang_id.length; i++) {
+        // Simpan detail invoice
         PreparedStatement psDetail = conn.prepareStatement(
           "INSERT INTO invoice_detail (invoice_id, barang_id, nama_barang, harga, qty, subtotal) VALUES (?, ?, ?, ?, ?, ?)"
         );
@@ -60,6 +61,15 @@
         psDetail.setInt(6, Integer.parseInt(barang_subtotal[i]));
         psDetail.executeUpdate();
         psDetail.close();
+
+        // Update stok barang
+        PreparedStatement psUpdateStok = conn.prepareStatement(
+          "UPDATE barang SET stok = stok - ? WHERE id = ?"
+        );
+        psUpdateStok.setInt(1, Integer.parseInt(barang_qty[i]));
+        psUpdateStok.setInt(2, Integer.parseInt(barang_id[i]));
+        psUpdateStok.executeUpdate();
+        psUpdateStok.close();
       }
       success = true;
       // Kosongkan keranjang di session

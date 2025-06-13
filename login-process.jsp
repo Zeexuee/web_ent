@@ -1,83 +1,92 @@
-<%@ page import="java.sql.*, java.io.*" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.sql.*, java.security.MessageDigest" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
-  // Ambil data form login
+  // Ambil data dari form login
   String email = request.getParameter("email");
   String password = request.getParameter("password");
-  
-  // Debug info
-  System.out.println("==========================================");
-  System.out.println("Login Process - Email/Password Authentication");
-  System.out.println("Email: " + email);
-  System.out.println("Password: [HIDDEN]");
-  
-  if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
-    System.out.println("Login failed: Missing email or password");
-    response.sendRedirect("login.html?error=missing_fields");
-    return;
-  }
-  
+  String firebaseUid = request.getParameter("firebaseUid");
+
   Connection conn = null;
+  PreparedStatement ps = null;
+  ResultSet rs = null;
+
   try {
-    // Koneksi ke database
+    // Load JDBC driver dan koneksi ke database
     Class.forName("com.mysql.cj.jdbc.Driver");
-    System.out.println("JDBC Driver loaded successfully");
-    
     conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nugas_db?useSSL=false&serverTimezone=UTC", "root", "");
-    System.out.println("Database connection established");
-    
-    // Query untuk memeriksa user
-    String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
-    PreparedStatement ps = conn.prepareStatement(sql);
-    ps.setString(1, email);
-    ps.setString(2, password);
-    
-    System.out.println("Executing query to check user credentials");
-    ResultSet rs = ps.executeQuery();
-    
-    if (rs.next()) {
-      // Login berhasil
-      int userId = rs.getInt("id");
-      String userName = rs.getString("nama");
-      String userRole = rs.getString("role");
-      String photoUrl = rs.getString("profile_photo");
-      
-      System.out.println("Login successful!");
-      System.out.println("User ID: " + userId);
-      System.out.println("User Name: " + userName);
-      System.out.println("User Role: " + userRole);
-      
-      // Set session
-      session.setAttribute("user", userName);
-      session.setAttribute("userId", userId);
-      session.setAttribute("userEmail", email);
-      if (photoUrl != null && !photoUrl.isEmpty()) {
-        session.setAttribute("userPhotoUrl", photoUrl);
-      }
-      
-      // Redirect berdasarkan role
-      if ("admin".equalsIgnoreCase(userRole)) {
-        System.out.println("Redirecting to admin page (welcome.jsp)");
-        response.sendRedirect("welcome.jsp");
+
+    if (firebaseUid != null && !firebaseUid.isEmpty()) {
+      // Login menggunakan Google (Firebase)
+      ps = conn.prepareStatement("SELECT * FROM users WHERE firebase_uid = ?");
+      ps.setString(1, firebaseUid);
+      rs = ps.executeQuery();
+
+      if (rs.next()) {
+        // Ambil data user dari database
+        String userName = rs.getString("nama");
+        String userRole = rs.getString("role");
+        String photoUrl = rs.getString("profile_photo");
+
+        // Set session
+        session.setAttribute("user", userName);
+        session.setAttribute("userEmail", rs.getString("email"));
+        session.setAttribute("userRole", userRole);
+        if (photoUrl != null && !photoUrl.isEmpty()) {
+          session.setAttribute("userPhotoUrl", photoUrl);
+        }
+
+        // Redirect berdasarkan role
+        if ("admin".equalsIgnoreCase(userRole)) {
+          response.sendRedirect("admin.jsp");
+        } else {
+          response.sendRedirect("welcome.jsp");
+        }
       } else {
-        System.out.println("Redirecting to user page (welcome.jsp)");
-        response.sendRedirect("welcome.jsp");
+        response.sendRedirect("login.jsp?error=firebase_user_not_found");
       }
+    } else if (email == null || password == null || email.trim().isEmpty() || password.trim().isEmpty()) {
+      // Validasi input kosong
+      System.out.println("Login failed: Missing email or password");
+      response.sendRedirect("login.jsp?error=missing_fields");
     } else {
-      // Login gagal
-      System.out.println("Login failed: Invalid credentials for email " + email);
-      response.sendRedirect("login.html?error=invalid_credentials");
+      // Login menggunakan email dan password
+      ps = conn.prepareStatement("SELECT * FROM users WHERE email = ? AND password = ?");
+      ps.setString(1, email);
+      ps.setString(2, password);
+      rs = ps.executeQuery();
+
+      if (rs.next()) {
+        // Ambil data user dari database
+        int userId = rs.getInt("id");
+        String userName = rs.getString("nama");
+        String userRole = rs.getString("role");
+        String photoUrl = rs.getString("profile_photo");
+
+        // Set session
+        session.setAttribute("user", userName);
+        session.setAttribute("userId", userId);
+        session.setAttribute("userEmail", email);
+        if (photoUrl != null && !photoUrl.isEmpty()) {
+          session.setAttribute("userPhotoUrl", photoUrl);
+        }
+
+        // Redirect berdasarkan role
+        if ("admin".equalsIgnoreCase(userRole)) {
+          response.sendRedirect("admin.jsp");
+        } else {
+          response.sendRedirect("welcome.jsp");
+        }
+      } else {
+        response.sendRedirect("login.jsp?error=invalid_credentials");
+      }
     }
-    
-    rs.close();
-    ps.close();
-    
   } catch (Exception e) {
-    System.out.println("ERROR during login: " + e.getMessage());
-    e.printStackTrace();
-    response.sendRedirect("login.html?error=" + e.getMessage());
+    // Tangani error
+    response.sendRedirect("login.jsp?error=" + e.getMessage());
   } finally {
+    // Tutup resource
+    if (rs != null) try { rs.close(); } catch (SQLException e) {}
+    if (ps != null) try { ps.close(); } catch (SQLException e) {}
     if (conn != null) try { conn.close(); } catch (SQLException e) {}
-    System.out.println("==========================================");
   }
 %>

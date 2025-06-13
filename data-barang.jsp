@@ -49,44 +49,38 @@
       top: 0;
       left: 0;
       height: 100%;
-      width: 240px;
-      background: var(--dark-color);
-      padding-top: 20px;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      width: 210px;
+      background: #212529;
+      padding-top: 30px;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.07);
       z-index: 100;
-      transition: all 0.3s;
     }
-    
+
     .sidebar .logo {
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       font-weight: bold;
-      color: var(--accent-color);
+      color: #00bcd4;
       text-align: center;
-      margin-bottom: 25px;
-      padding: 0 15px;
+      margin-bottom: 30px;
+      letter-spacing: 1px;
     }
-    
+
     .sidebar a {
-      color: rgba(255,255,255,0.85);
-      padding: 12px 25px;
+      color: #f8f9fa;
+      padding: 12px 22px;
       text-decoration: none;
       display: flex;
       align-items: center;
-      font-size: 1rem;
-      border-radius: 5px;
-      margin: 8px 12px;
-      transition: all 0.2s;
+      font-size: 1.08rem;
+      border-radius: 8px 0 0 8px;
+      margin-bottom: 6px;
+      transition: background 0.2s;
     }
-    
-    .sidebar a:hover, .sidebar a.active {
-      background: var(--primary-color);
-      color: white;
-      transform: translateX(5px);
-    }
-    
-    .sidebar a i {
-      margin-right: 10px;
-      font-size: 1.1rem;
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      background: #00bcd4;
+      color: #fff;
     }
     
     .content {
@@ -289,13 +283,13 @@
 
 <!-- Sidebar -->
 <div class="sidebar">
-  <div class="logo">
+  <div class="logo mb-4">
     <i class="bi bi-bag-check-fill"></i> TokoKita
   </div>
-  <a href="welcome.jsp"><i class="bi bi-house-door"></i> <span>Home</span></a>
-  <a href="data-user.jsp"><i class="bi bi-people"></i> <span>Data Pengguna</span></a>
-  <a href="data-barang.jsp" class="active"><i class="bi bi-box-seam"></i> <span>Data Barang</span></a>
-  <a href="list-invoice-admin.jsp"><i class="bi bi-receipt"></i> <span>Invoice</span></a>
+  <a href="admin.jsp" class=""><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+  <a href="data-user.jsp"><i class="bi bi-people me-2"></i> Data Pengguna</a>
+  <a href="data-barang.jsp"  class="active"><i class="bi bi-box-seam me-2"></i> Data Barang</a>
+  <a href="list-invoice-admin.jsp"><i class="bi bi-box me-2"></i> Pesanan</a>
 </div>
 
 <!-- Navbar -->

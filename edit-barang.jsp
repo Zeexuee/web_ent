@@ -110,3 +110,12 @@
 
   response.sendRedirect("data-barang.jsp");
 %>
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBfXvTA8g71mMG4tTcJCW-kGYirC-eHiKo",
+    authDomain: "fathan-64919.firebaseapp.com",
+    projectId: "fathan-64919",
+    storageBucket: "fathan-64919.firebasestorage.app",
+    messagingSenderId: "382140446563",
+    appId: "1:382140446563:web:3cc2dc3dd4b687876d8556"
+  };
