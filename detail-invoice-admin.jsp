@@ -288,7 +288,7 @@
                 <div class="detail-value"><%= metode %></div>
               </div>
               <div class="detail-row">
-                <div class="detail-label">Status Pembayaran</div>
+                <div class="detail-label">Status</div>
                 <div class="detail-value">
                   <span class="status-badge <%= statusClass %>">
                     <i class="bi bi-circle-fill me-1" style="font-size: 8px;"></i> <%= status.toUpperCase() %>
