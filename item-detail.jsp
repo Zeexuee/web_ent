@@ -267,11 +267,12 @@
             </form>
             
             <div class="mt-3">
-              <a href="pembayaran.jsp?id=<%= rs.getInt("id") %>&qty=1" 
-                 class="btn btn-buy <%= stok == 0 ? "disabled" : "" %>"
-                 <%= stok == 0 ? "aria-disabled='true'" : "" %>>
+              <button type="button"
+                class="btn btn-buy <%= stok == 0 ? "disabled" : "" %>"
+                <%= stok == 0 ? "aria-disabled='true'" : "" %>
+                onclick="beliSekarang(<%= rs.getInt("id") %>)">
                 <i class="bi bi-credit-card me-1"></i> Beli Sekarang
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -321,6 +322,14 @@
 </div>
 
 <script src="js/bootstrap.bundle.min.js"></script>
+<script>
+function beliSekarang(id) {
+  var qtyInput = document.getElementById('qty');
+  var qty = qtyInput ? qtyInput.value : 1;
+  if (qty < 1) qty = 1;
+  window.location.href = 'pembayaran.jsp?id=' + id + '&qty=' + qty;
+}
+</script>
 </body>
 </html>
 <%

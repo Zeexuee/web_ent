@@ -127,6 +127,16 @@
       border-color: #0097a7;
       color: white;
     }
+    .btn-print-invoice {
+      background: #28a745;
+      border-color: #28a745;
+      color: white;
+    }
+    .btn-print-invoice:hover {
+      background: #218838;
+      border-color: #218838;
+      color: white;
+    }
     .address-cell {
       max-width: 200px;
       white-space: nowrap;
@@ -140,9 +150,18 @@
       margin-bottom: 20px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
+    .action-buttons {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+    }
     @media (max-width: 900px) {
       .sidebar { width: 100%; height: auto; position: static; box-shadow: none; }
       .content { margin-left: 0; padding: 15px; }
+      .action-buttons {
+        flex-direction: column;
+        gap: 3px;
+      }
     }
   </style>
 </head>
@@ -175,9 +194,9 @@
             <li><a class="dropdown-item" href="data-user.jsp"><i class="bi bi-person"></i> Profil</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
-              <a href="logout.jsp" class="dropdown-item text-danger">
-                <i class="bi bi-box-arrow-right"></i> Logout
-              </a>
+              <form action="logout.jsp" method="post" style="margin: 0;">
+                <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Logout</button>
+              </form>
             </li>
           </ul>
         </li>
@@ -206,7 +225,7 @@
         <label for="search-status" class="form-label">Status</label>
         <select class="form-select" id="search-status" name="status">
           <option value="">Semua Status</option>
-          <option value="Pending" <%= "menunggu".equals(request.getParameter("status")) ? "selected" : "" %>>Menunggu Pembayaran</option>
+          <option value="menunggu" <%= "menunggu".equals(request.getParameter("status")) ? "selected" : "" %>>Menunggu Pembayaran</option>
           <option value="dibayar" <%= "dibayar".equals(request.getParameter("status")) ? "selected" : "" %>>Telah Dibayar</option>
           <option value="dikirim" <%= "dikirim".equals(request.getParameter("status")) ? "selected" : "" %>>Sedang Dikirim</option>
           <option value="selesai" <%= "selesai".equals(request.getParameter("status")) ? "selected" : "" %>>Selesai</option>
@@ -232,15 +251,15 @@
         <table class="table table-striped align-middle">
           <thead class="table-light">
             <tr>
-              <th scope="col">ID</th>
-              <th scope="col">User</th>
-              <th scope="col">Nama Penerima</th>
-              <th scope="col">Alamat</th>
-              <th scope="col">Metode</th>
-              <th scope="col">Total</th>
-              <th scope="col">Tanggal</th>
-              <th scope="col">Status</th>
-              <th scope="col" class="text-center">Aksi</th>
+              <th>ID</th>
+              <th>Username</th>
+              <th>Nama Penerima</th>
+              <th>Alamat</th>
+              <th>Metode</th>
+              <th>Total</th>
+              <th>Tanggal</th>
+              <th>Status</th>
+              <th>Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -248,39 +267,37 @@
               Connection conn = null;
               PreparedStatement ps = null;
               ResultSet rs = null;
+              boolean hasData = false;
               
               try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/nugas_db?useSSL=false&serverTimezone=UTC", "root", "");
                 
-                StringBuilder sql = new StringBuilder("SELECT * FROM invoice WHERE 1=1");
+                String searchUser = request.getParameter("user");
+                String searchStatus = request.getParameter("status");
                 
-                // Add filter conditions
-                if (request.getParameter("user") != null && !request.getParameter("user").isEmpty()) {
-                  sql.append(" AND user LIKE ?");
+                StringBuilder query = new StringBuilder("SELECT * FROM invoice WHERE 1=1");
+                
+                if (searchUser != null && !searchUser.trim().isEmpty()) {
+                  query.append(" AND user LIKE ?");
+                }
+                if (searchStatus != null && !searchStatus.trim().isEmpty()) {
+                  query.append(" AND status = ?");
                 }
                 
-                if (request.getParameter("status") != null && !request.getParameter("status").isEmpty()) {
-                  sql.append(" AND status = ?");
-                }
+                query.append(" ORDER BY id DESC");
                 
-                sql.append(" ORDER BY tanggal DESC");
-                
-                ps = conn.prepareStatement(sql.toString());
+                ps = conn.prepareStatement(query.toString());
                 
                 int paramIndex = 1;
-                
-                if (request.getParameter("user") != null && !request.getParameter("user").isEmpty()) {
-                  ps.setString(paramIndex++, "%" + request.getParameter("user") + "%");
+                if (searchUser != null && !searchUser.trim().isEmpty()) {
+                  ps.setString(paramIndex++, "%" + searchUser + "%");
                 }
-                
-                if (request.getParameter("status") != null && !request.getParameter("status").isEmpty()) {
-                  ps.setString(paramIndex, request.getParameter("status"));
+                if (searchStatus != null && !searchStatus.trim().isEmpty()) {
+                  ps.setString(paramIndex++, searchStatus);
                 }
                 
                 rs = ps.executeQuery();
-                
-                boolean hasData = false;
                 
                 while (rs.next()) {
                   hasData = true;
@@ -293,15 +310,32 @@
                   String tanggal = rs.getString("tanggal");
                   String status = rs.getString("status");
                   
-                  String statusClass = "status-pending";
-                  if(status.equalsIgnoreCase("dibayar")) {
-                    statusClass = "status-paid";
-                  } else if(status.equalsIgnoreCase("dikirim")) {
-                    statusClass = "status-shipped";
-                  } else if(status.equalsIgnoreCase("selesai")) {
-                    statusClass = "status-delivered";
-                  } else if(status.equalsIgnoreCase("batal")) {
-                    statusClass = "status-canceled";
+                  String statusClass = "";
+                  String statusText = "";
+                  switch(status) {
+                    case "menunggu":
+                      statusClass = "status-pending";
+                      statusText = "Menunggu Pembayaran";
+                      break;
+                    case "dibayar":
+                      statusClass = "status-paid";
+                      statusText = "Telah Dibayar";
+                      break;
+                    case "dikirim":
+                      statusClass = "status-shipped";
+                      statusText = "Sedang Dikirim";
+                      break;
+                    case "selesai":
+                      statusClass = "status-delivered";
+                      statusText = "Selesai";
+                      break;
+                    case "batal":
+                      statusClass = "status-canceled";
+                      statusText = "Dibatalkan";
+                      break;
+                    default:
+                      statusClass = "status-pending";
+                      statusText = status;
                   }
             %>
             <tr>
@@ -313,37 +347,19 @@
               <td>Rp <%= NumberFormat.getNumberInstance(new Locale("id", "ID")).format(total) %></td>
               <td><%= tanggal %></td>
               <td>
-                <%
-                  // Ketika menampilkan status di tabel, pastikan tampilan sesuai dengan nilai dari database
-                  String statusDisplay = "";
-                  switch(status.toLowerCase()) {
-                    case "menunggu":
-                      statusDisplay = "MENUNGGU PEMBAYARAN";
-                      break;
-                    case "dibayar":
-                      statusDisplay = "TELAH DIBAYAR";
-                      break;
-                    case "dikirim":
-                      statusDisplay = "SEDANG DIKIRIM";
-                      break;
-                    case "selesai":
-                      statusDisplay = "SELESAI";
-                      break;
-                    case "batal":
-                      statusDisplay = "DIBATALKAN";
-                      break;
-                    default:
-                      statusDisplay = status.toUpperCase();
-                  }
-                %>
                 <span class="status-badge <%= statusClass %>">
-                  <%= statusDisplay %>
+                  <%= statusText %>
                 </span>
               </td>
               <td class="text-center">
-                <a href="detail-invoice-admin.jsp?id=<%= invoiceId %>" class="btn btn-detail btn-sm">
-                  <i class="bi bi-eye"></i> Detail
-                </a>
+                <div class="action-buttons">
+                  <button class="btn btn-sm btn-detail" onclick="showDetail('<%= invoiceId %>')">
+                    <i class="bi bi-eye"></i> Detail
+                  </button>
+                  <button class="btn btn-sm btn-print-invoice" data-id="<%= invoiceId %>" data-user="<%= user %>" data-bs-toggle="modal" data-bs-target="#modalPrintInvoice">
+                    <i class="bi bi-download"></i> Download
+                  </button>
+                </div>
               </td>
             </tr>
             <%
@@ -374,6 +390,80 @@
   </div>
 </div>
 
+<!-- Modal Print Invoice -->
+<div class="modal fade" id="modalPrintInvoice" tabindex="-1" aria-labelledby="modalPrintInvoiceLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #28a745; color: white;">
+        <h5 class="modal-title" id="modalPrintInvoiceLabel">
+          <i class="bi bi-download me-2"></i>Download Invoice
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="mb-3">Pilih format download:</p>
+        <p class="fw-bold mb-3">Invoice ID: <span id="print-invoice-id"></span></p>
+        <p class="text-muted mb-3">User: <span id="print-invoice-user"></span></p>
+        
+        <div class="d-grid gap-2">
+          <button type="button" class="btn btn-danger" id="printPdf">
+            <i class="bi bi-file-earmark-pdf me-2"></i>Download PDF
+          </button>
+          
+          <button type="button" class="btn btn-warning" id="printJson">
+            <i class="bi bi-file-earmark-code me-2"></i>Download JSON
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="js/bootstrap.bundle.min.js"></script>
+<script>
+  // Show detail function
+  function showDetail(invoiceId) {
+    window.open('detail-invoice.jsp?id=' + invoiceId, '_blank');
+  }
+
+  // Handle print invoice button click
+  document.querySelectorAll('.btn-print-invoice').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const invoiceId = this.getAttribute('data-id');
+      const invoiceUser = this.getAttribute('data-user');
+      
+      document.getElementById('print-invoice-id').textContent = invoiceId;
+      document.getElementById('print-invoice-user').textContent = invoiceUser;
+      
+      // Download PDF
+      document.getElementById('printPdf').onclick = function() {
+        window.open('cetak-pdf.jsp?id=' + invoiceId, '_blank');
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalPrintInvoice'));
+        if (modal) modal.hide();
+      };
+      
+      // Download TXT
+      document.getElementById('printTxt').onclick = function() {
+        window.open('cetak-invoice.jsp?id=' + invoiceId + '&format=txt', '_blank');
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalPrintInvoice'));
+        if (modal) modal.hide();
+      };
+      
+      // Download JSON
+      document.getElementById('printJson').onclick = function() {
+        window.open('cetak-invoice.jsp?id=' + invoiceId + '&format=json', '_blank');
+        const modal = bootstrap.Modal.getInstance(document.getElementById('modalPrintInvoice'));
+        if (modal) modal.hide();
+      };
+    });
+  });
+</script>
 </body>
 </html>
+
+<button type="button" class="btn btn-primary" id="printTxt">
+            <i class="bi bi-file-earmark-text me-2"></i>Download TXT
+          </button>

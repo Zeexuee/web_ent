@@ -27,23 +27,10 @@
   <link rel="stylesheet" href="css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <style>
-    :root {
-      --primary-color: #4361ee;
-      --secondary-color: #3f37c9;
-      --accent-color: #4895ef;
-      --light-color: #f8f9fa;
-      --dark-color: #212529;
-      --danger-color: #e63946;
-      --warning-color: #ff9f1c;
-      --success-color: #4cc9f0;
-    }
-    
     body {
-      background-color: #f5f7fa;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      padding-top: 70px;
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      padding-top: 80px;
     }
-    
     .sidebar {
       position: fixed;
       top: 0;
@@ -52,10 +39,9 @@
       width: 210px;
       background: #212529;
       padding-top: 30px;
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.07);
+      box-shadow: 2px 0 10px rgba(0,0,0,0.07);
       z-index: 100;
     }
-
     .sidebar .logo {
       font-size: 1.6rem;
       font-weight: bold;
@@ -64,7 +50,6 @@
       margin-bottom: 30px;
       letter-spacing: 1px;
     }
-
     .sidebar a {
       color: #f8f9fa;
       padding: 12px 22px;
@@ -76,206 +61,80 @@
       margin-bottom: 6px;
       transition: background 0.2s;
     }
-
-    .sidebar a:hover,
-    .sidebar a.active {
+    .sidebar a:hover, .sidebar a.active {
       background: #00bcd4;
       color: #fff;
     }
-    
     .content {
-      margin-left: 260px;
-      padding: 25px;
-      transition: all 0.3s;
+      margin-left: 230px;
+      padding: 30px 20px 20px 20px;
+      min-height: 100vh;
     }
-    
     .navbar {
-      background-color: white;
-      box-shadow: 0 2px 15px rgba(0,0,0,0.05);
-      margin-left: 240px;
-      padding: 10px 25px;
+      box-shadow: 0 2px 12px rgba(0,188,212,0.07);
+      background: #fff;
+      left: 210px;
     }
-    
-    .navbar .nav-link {
-      color: var(--dark-color);
-      font-weight: 500;
-    }
-    
-    .navbar .nav-link:hover {
-      color: var(--primary-color);
-    }
-    
     .page-header {
       display: flex;
-      justify-content: space-between;
+      justify-content: between;
       align-items: center;
-      margin-bottom: 25px;
-      padding-bottom: 15px;
-      border-bottom: 1px solid #eee;
-    }
-    
-    .page-title {
-      font-weight: 600;
-      color: var(--dark-color);
-      margin: 0;
-    }
-    
-    .btn-add {
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 8px 20px;
-      border-radius: 5px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s;
-    }
-    
-    .btn-add:hover {
-      background: var(--secondary-color);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    
-    .products-table {
-      width: 100%;
-      background: white;
-      border-radius: 10px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
       margin-bottom: 30px;
     }
-    
-    .products-table table {
-      width: 100%;
-      border-collapse: collapse;
+    .page-title {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #212529;
     }
-    
+    .btn-add {
+      background: #00bcd4;
+      border-color: #00bcd4;
+      color: white;
+    }
+    .btn-add:hover {
+      background: #0097a7;
+      border-color: #0097a7;
+      color: white;
+    }
+    .btn-print-all {
+      background: #17a2b8;
+      border-color: #17a2b8;
+      color: white;
+    }
+    .btn-print-all:hover {
+      background: #138496;
+      border-color: #138496;
+      color: white;
+    }
+    .products-table {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      overflow: hidden;
+    }
+    .products-table table {
+      margin-bottom: 0;
+    }
     .products-table th {
       background-color: #f8f9fa;
-      padding: 15px;
-      text-align: left;
       font-weight: 600;
-      color: var(--dark-color);
-      border-bottom: 1px solid #eee;
+      border: none;
+      padding: 15px;
     }
-    
     .products-table td {
-      padding: 12px 15px;
-      border-bottom: 1px solid #eee;
-      vertical-align: middle;
+      padding: 15px;
+      border: none;
+      border-bottom: 1px solid #f1f3f4;
     }
-    
-    .products-table tr:last-child td {
-      border-bottom: none;
-    }
-    
-    .products-table tr:hover {
-      background-color: rgba(67, 97, 238, 0.03);
-    }
-    
-    .product-img-small {
-      width: 70px;
-      height: 70px;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-    
-    .product-stock-cell {
-      width: 140px;
-    }
-    
-    .product-actions-cell {
-      width: 180px;
-    }
-    
-    .btn-actions {
-      display: flex;
-      gap: 8px;
-    }
-    
-    .modal-header-success {
-      background-color: var(--primary-color);
+    .btn-print {
+      background: #28a745;
+      border-color: #28a745;
       color: white;
     }
-    
-    .modal-header-warning {
-      background-color: var(--warning-color);
+    .btn-print:hover {
+      background: #218838;
+      border-color: #218838;
       color: white;
-    }
-    
-    @media (max-width: 992px) {
-      .sidebar {
-        width: 70px;
-        overflow: hidden;
-      }
-      
-      .sidebar .logo {
-        font-size: 1.2rem;
-        margin-bottom: 40px;
-      }
-      
-      .sidebar a span {
-        display: none;
-      }
-      
-      .sidebar a {
-        justify-content: center;
-        padding: 15px;
-      }
-      
-      .sidebar a i {
-        margin-right: 0;
-        font-size: 1.3rem;
-      }
-      
-      .content {
-        margin-left: 85px;
-      }
-      
-      .navbar {
-        margin-left: 70px;
-      }
-      
-      .products-table {
-        overflow-x: auto;
-      }
-      
-      .product-desc-cell {
-        max-width: 200px;
-      }
-    }
-    
-    @media (max-width: 768px) {
-      .product-desc-cell {
-        max-width: 150px;
-      }
-      
-      .product-img {
-        height: 150px;
-      }
-    }
-    
-    @media (max-width: 576px) {
-      .sidebar {
-        width: 0;
-        padding: 0;
-      }
-      
-      .content, .navbar {
-        margin-left: 0;
-      }
-      
-      .products-grid {
-        grid-template-columns: 1fr 1fr;
-      }
-      
-      .page-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-      }
     }
   </style>
 </head>
@@ -288,29 +147,26 @@
   </div>
   <a href="admin.jsp" class=""><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
   <a href="data-user.jsp"><i class="bi bi-people me-2"></i> Data Pengguna</a>
-  <a href="data-barang.jsp"  class="active"><i class="bi bi-box-seam me-2"></i> Data Barang</a>
+  <a href="data-barang.jsp" class="active"><i class="bi bi-box-seam me-2"></i> Data Barang</a>
   <a href="list-invoice-admin.jsp"><i class="bi bi-box me-2"></i> Pesanan</a>
 </div>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg fixed-top">
   <div class="container-fluid">
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+    <div class="collapse navbar-collapse justify-content-end">
       <ul class="navbar-nav align-items-center">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-            <i class="bi bi-person-circle me-1"></i> <%= userName %>
+            <i class="bi bi-person-circle"></i> <%= userName %>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-            <li><a class="dropdown-item" href="data-user.jsp"><i class="bi bi-person me-2"></i> Profil</a></li>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Profil</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
-              <a href="logout.jsp" class="dropdown-item text-danger">
-                <i class="bi bi-box-arrow-right me-2"></i> Logout
-              </a>
+              <form action="logout.jsp" method="post" style="margin: 0;">
+                <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Logout</button>
+              </form>
             </li>
           </ul>
         </li>
@@ -321,83 +177,174 @@
 
 <div class="content">
   <div class="page-header">
-    <h4 class="page-title"><i class="bi bi-box-seam me-2"></i>Data Barang</h4>
-    <button class="btn-add" data-bs-toggle="modal" data-bs-target="#modalTambahBarang">
-      <i class="bi bi-plus-circle"></i> Tambah Barang
-    </button>
+    <h1 class="page-title"><i class="bi bi-box-seam"></i> Data Barang</h1>
+    <div class="d-flex gap-2">
+      <button class="btn btn-print-all" data-bs-toggle="modal" data-bs-target="#modalPrintAllBarang">
+        <i class="bi bi-printer"></i> Cetak Semua Data
+      </button>
+      <button class="btn btn-add" data-bs-toggle="modal" data-bs-target="#modalTambahBarang">
+        <i class="bi bi-plus-circle"></i> Tambah Barang
+      </button>
+    </div>
   </div>
   
   <div class="products-table">
-    <table>
+    <table class="table table-hover">
       <thead>
         <tr>
-          <th width="80">Gambar</th>
+          <th>ID</th>
+          <th>Gambar</th>
           <th>Nama Barang</th>
           <th>Deskripsi</th>
           <th>Harga</th>
-          <th class="product-stock-cell">Stok</th>
-          <th class="product-actions-cell">Aksi</th>
+          <th>Stok</th>
+          <th>Aksi</th>
         </tr>
       </thead>
       <tbody>
         <%
+          PreparedStatement ps = null;
+          ResultSet rs = null;
+          boolean hasData = false;
+          
           try {
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM barang ORDER BY id DESC");
+            ps = conn.prepareStatement("SELECT * FROM barang ORDER BY id DESC");
+            rs = ps.executeQuery();
+            
             while (rs.next()) {
+              hasData = true;
+              int id = rs.getInt("id");
+              String nama = rs.getString("nama");
+              String deskripsi = rs.getString("deskripsi");
+              int harga = rs.getInt("harga");
               int stok = rs.getInt("stok");
-              String stockClass = stok > 10 ? "in-stock" : (stok > 0 ? "low-stock" : "out-of-stock");
-              String stockText = stok > 10 ? "Stok Tersedia" : (stok > 0 ? "Stok Terbatas" : "Stok Habis");
+              String gambar = rs.getString("gambar");
         %>
         <tr>
+          <td><%= id %></td>
           <td>
-            <% if (rs.getString("gambar") != null && !rs.getString("gambar").isEmpty()) { %>
-              <img src="uploads/<%= rs.getString("gambar") %>" class="product-img-small">
+            <% if (gambar != null && !gambar.isEmpty()) { %>
+              <img src="uploads/<%= gambar %>" alt="<%= nama %>" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
             <% } else { %>
-              <img src="https://via.placeholder.com/70x70?text=No+Image" class="product-img-small">
+              <div style="width: 50px; height: 50px; background: #f8f9fa; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-image text-muted"></i>
+              </div>
             <% } %>
           </td>
-          <td><strong><%= rs.getString("nama") %></strong></td>
-          <td class="product-desc-cell">
-            <%= rs.getString("deskripsi").length() > 80 ? rs.getString("deskripsi").substring(0, 80) + "..." : rs.getString("deskripsi") %>
-          </td>
-          <td>Rp <%= String.format("%,d", rs.getInt("harga")) %></td>
+          <td><strong><%= nama %></strong></td>
+          <td><%= deskripsi %></td>
+          <td>Rp <%= String.format("%,d", harga) %></td>
           <td>
-            <div class="product-stock <%= stockClass %>">
-              <i class="bi bi-circle-fill me-1" style="font-size: 8px;"></i> <%= stockText %> (<%= stok %>)
-            </div>
+            <span class="badge <%= stok > 10 ? "bg-success" : (stok > 0 ? "bg-warning" : "bg-danger") %>">
+              <%= stok %> unit
+            </span>
           </td>
           <td>
-            <div class="btn-actions">
-              <button 
-                class="btn-edit"
-                data-id="<%= rs.getInt("id") %>"
-                data-nama="<%= rs.getString("nama") %>"
-                data-deskripsi="<%= rs.getString("deskripsi") %>"
-                data-harga="<%= rs.getInt("harga") %>"
-                data-stok="<%= rs.getInt("stok") %>"
-                data-gambar="<%= rs.getString("gambar") %>"
-                data-bs-toggle="modal"
-                data-bs-target="#modalEditBarang"
-              ><i class="bi bi-pencil me-1"></i> Edit</button>
-              
-              <a href="delete-barang.jsp?id=<%= rs.getInt("id") %>" 
-                class="btn-delete" 
-                onclick="return confirm('Yakin ingin menghapus barang ini?')"
-              ><i class="bi bi-trash me-1"></i> Hapus</a>
+            <div class="d-flex gap-1">
+              <button class="btn btn-sm btn-print" data-id="<%= id %>" data-bs-toggle="modal" data-bs-target="#modalPrintBarang">
+                <i class="bi bi-printer"></i>
+              </button>
+              <button class="btn btn-sm btn-warning btn-edit" 
+                      data-id="<%= id %>"
+                      data-nama="<%= nama %>"
+                      data-deskripsi="<%= deskripsi %>"
+                      data-harga="<%= harga %>"
+                      data-stok="<%= stok %>"
+                      data-gambar="<%= gambar != null ? gambar : "" %>"
+                      data-bs-toggle="modal" 
+                      data-bs-target="#modalEditBarang">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+              <a href="delete-barang.jsp?id=<%= id %>" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus barang ini?')">
+                <i class="bi bi-trash"></i>
+              </a>
             </div>
           </td>
         </tr>
         <%
             }
-            rs.close();
-            st.close();
+            
+            if (!hasData) {
+        %>
+        <tr>
+          <td colspan="7" class="text-center py-4">
+            <i class="bi bi-box" style="font-size: 2rem; opacity: 0.3;"></i>
+            <p class="mt-2 mb-0">Belum ada data barang</p>
+          </td>
+        </tr>
+        <%
+            }
           } catch (Exception e) {
-            out.println("<tr><td colspan='6'><div class='alert alert-danger'>Gagal mengambil data: " + e.getMessage() + "</div></td></tr>");
+            out.println("<tr><td colspan='7' class='text-danger'>Error: " + e.getMessage() + "</td></tr>");
+          } finally {
+            if (rs != null) try { rs.close(); } catch (Exception ex) {}
+            if (ps != null) try { ps.close(); } catch (Exception ex) {}
           }
         %>
       </tbody>
     </table>
+  </div>
+</div>
+
+<!-- Modal Print Per Item -->
+<div class="modal fade" id="modalPrintBarang" tabindex="-1" aria-labelledby="modalPrintBarangLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="modalPrintBarangLabel">
+          <i class="bi bi-printer me-2"></i>Cetak Data Barang
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="mb-3">Pilih format cetak:</p>
+        <p class="fw-bold mb-3">ID Barang: <span id="print-barang-id"></span></p>
+        
+        <div class="d-grid gap-2">
+          <button type="button" class="btn btn-danger" id="printDocx">
+            <i class="bi bi-file-earmark-word me-2"></i>Download DOCX
+          </button>
+          <button type="button" class="btn btn-success" id="printExcel">
+            <i class="bi bi-file-earmark-excel me-2"></i>Download Excel
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Print Semua Barang -->
+<div class="modal fade" id="modalPrintAllBarang" tabindex="-1" aria-labelledby="modalPrintAllBarangLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title" id="modalPrintAllBarangLabel">
+          <i class="bi bi-printer me-2"></i>Cetak Semua Data Barang
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <p class="mb-3">Pilih format cetak untuk semua data barang:</p>
+        
+        <div class="d-grid gap-2">
+          <button type="button" class="btn btn-danger" id="printAllDocx">
+            <i class="bi bi-file-earmark-word me-2"></i>Download DOCX
+          </button>
+          <button type="button" class="btn btn-success" id="printAllExcel">
+            <i class="bi bi-file-earmark-excel me-2"></i>Download Excel
+          </button>
+          <button type="button" class="btn btn-primary" id="printAllPdf">
+            <i class="bi bi-file-earmark-pdf me-2"></i>Download PDF
+          </button>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -551,21 +498,45 @@
     }
   });
   
-  // Toggle sidebar pada layar kecil
-  const toggleSidebar = () => {
-    const sidebar = document.querySelector('.sidebar');
-    if (window.innerWidth <= 576) {
-      sidebar.style.width = sidebar.style.width === '240px' ? '0' : '240px';
-    }
-  };
-  
-  // Inisialisasi tooltip
-  document.addEventListener('DOMContentLoaded', function() {
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl)
+  // Handle print button click
+  document.querySelectorAll('.btn-print').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const barangId = this.getAttribute('data-id');
+      const barangNama = this.getAttribute('data-nama');
+      
+      document.getElementById('print-barang-id').textContent = barangNama;
+      
+      // Set up download buttons
+      document.getElementById('printDocx').onclick = function() {
+        window.open('print-barang.jsp?id=' + barangId + '&format=docx', '_blank');
+        bootstrap.Modal.getInstance(document.getElementById('modalPrintBarang')).hide();
+      };
+      
+      document.getElementById('printExcel').onclick = function() {
+        window.open('print-barang.jsp?id=' + barangId + '&format=excel', '_blank');
+        bootstrap.Modal.getInstance(document.getElementById('modalPrintBarang')).hide();
+      };
     });
   });
+  
+  // Handle print all items
+  document.getElementById('printAllDocx').onclick = function() {
+    window.open('print-all-barang.jsp?format=docx', '_blank');
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalPrintAllBarang'));
+    if (modal) modal.hide();
+  };
+  
+  document.getElementById('printAllExcel').onclick = function() {
+    window.open('print-all-barang.jsp?format=excel', '_blank');
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalPrintAllBarang'));
+    if (modal) modal.hide();
+  };
+  
+  document.getElementById('printAllPdf').onclick = function() {
+    window.open('print-all-barang.jsp?format=pdf', '_blank');
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalPrintAllBarang'));
+    if (modal) modal.hide();
+  };
 </script>
 </body>
 </html>
