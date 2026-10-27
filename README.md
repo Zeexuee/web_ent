@@ -6,7 +6,7 @@ This project includes a basic user table schema for managing user data, such as 
 
 ---
 
-## 📋 Table Structure
+## Table Structure
 
 ### `users` Table
 
@@ -21,7 +21,7 @@ This project includes a basic user table schema for managing user data, such as 
 
 ---
 
-## 🛠️ How to Use
+## How to Use
 
 To use this structure in your own MySQL or MariaDB setup, follow these steps:
 
